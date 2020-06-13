@@ -16,6 +16,11 @@ $member = mysqli_fetch_array($member);
 <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet"/>
 </HEAD>
 <BODY>
+    <div style="display:none">
+        <div id="member-id">
+            <?php echo $member['id'] ?>
+        </div>
+    </div>
 	<div class="container">
         <?php include('assets/elements/header.php') ?>
         <div class="content">
@@ -34,9 +39,14 @@ $member = mysqli_fetch_array($member);
 $ideas = mysqli_query($conn,"select * FROM tbl_ideas where member_id='".$member['id']."'");
             
             while ($row = mysqli_fetch_array($ideas)) { ?>
-        <a onclick="openModal();currentSlide(<?php echo $row['id'] ?>,'idea',<?php echo $member['id'] ?>)" class="rows link">
-            <?php echo $row['title'] ?>
-        </a>
+        <div class="rows">
+            <a onclick="openModal();currentSlide(<?php echo $row['id'] ?>,'idea',<?php echo $member['id'] ?>)" class="link adjust-size">
+                <?php echo $row['title'] ?>
+            </a>
+            <a class="fixed-size icon" onclick="deleteidea(<?php echo $row['id'] ?>)">
+                <i class="fas fa-trash"></i>
+            </a>
+        </div>
         <?php } ?>
             <br/>
             <br/>

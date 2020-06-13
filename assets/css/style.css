@@ -141,6 +141,29 @@ a {
     color:#4db6ac;
     transition:0.25s;
 }
+.strip-input {
+    color: inherit;
+    letter-spacing: inherit;
+    word-spacing: inherit;
+    text-transform: inherit;
+    text-indent: inherit;
+    text-shadow: inherit;
+    display: inherit;
+    text-align: inherit;
+    -webkit-appearance: textfield;
+    background-color: inherit;
+    -webkit-rtl-ordering: logical;
+    cursor: text;
+    margin: 0px;
+    font-style: inherit;
+    font-size:inherit;
+    font-weight:inherit;
+    padding: 0px;
+    border-width: 0px;
+    border-style: inherit;
+    border-color: inherit;
+    border-image: none;
+}
 [contentEditable=true]:empty:not(:hover):before{
         content:attr(data-placeholder);
         color:#666;
@@ -459,6 +482,7 @@ a {
     -webkit-box-shadow: 5px 5px 15px 0px rgb(25, 25, 25);
     -moz-box-shadow: 5px 5px 15px 0px rgba(25, 25, 25);
     box-shadow: 5px 5px 15px 0px rgba(25, 25, 25);
+    max-width:375px;
 }
 .sign-up-container .input-box {
     margin:10px 0px;
