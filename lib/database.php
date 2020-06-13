@@ -9,5 +9,5 @@
   echo "Failed to connect to MySQL: " . mysqli_connect_error();
   exit();
 };
-DEFINE('BASE_URL','http://localhost');
+DEFINE('BASE_URL','http://localhost/incubator-v1');
 ?>

@@ -1,5 +1,5 @@
 //var base_url='http://incubator.gq';
-var base_url='http://localhost';
+var base_url='http://localhost/incubator-v1';
 
 // Write idea to database on Enter key
 if (document.getElementById('clickbox')!=null) {
@@ -289,3 +289,7 @@ function filterFunction($name,$input) {
     }
   }
 }
+
+/* Parallax on homepage */
+var image = document.getElementsByClassName('thumbnail');
+new simpleParallax(image);
