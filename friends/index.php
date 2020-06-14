@@ -35,11 +35,40 @@ if (isset($_POST['search'])) {
         <div class="content">
         <?php include('../assets/elements/menu.php') ?>
         <div class="content-rows">
-            <form action="<?php echo BASE_URL ?>/friends/search.php" method="post" class="search-container">
-            <input type="text" class="bar adjust-size" name="search" placeholder="Search for members..."/>
-            <input type="submit" value="Search" class="button fixed-size"/>
-            
-            </form>
+            <div class="dropdown">
+                <form action="<?php echo BASE_URL ?>/friends/search.php" method="post" class="search-container">
+                <input type="text" class="bar adjust-size" id="members-input" onfocus="dropdown('members-dropdown')" onfocusout="dropdown('members-dropdown')" onkeyup="filterFunction('members-dropdown','members-input')" autocomplete="off" name="search" placeholder="Search for members..."/>
+                <input type="submit" value="Search" class="button fixed-size"/>
+                </form>
+
+                <div id="members-dropdown" class="dropdown-content search-filter">
+                    <?php
+                    $allmembers = mysqli_query($conn,"SELECT id, username, firstname, lastname FROM tbl_member");
+                        while ($allmember = mysqli_fetch_array($allmembers)) {
+                            if ($allmember['id']!==$member['id']) {
+                    ?>
+                    <a style="display:flex">
+                        <div class="adjust-size"><?php echo $allmember['firstname']." ".$allmember['lastname'] ?></div>
+                        <?php
+                            $friendcheck = mysqli_query($conn,"SELECT * FROM tbl_friends WHERE member1='".$member['id']."' AND member2='".$allmember['id']."' OR member2='".$member['id']."' AND member1='".$allmember['id']."'");
+                            $friendcheck=mysqli_fetch_array($friendcheck);
+                            if (empty($friendcheck)) {
+                        ?>
+                        <div class="fixed-size icon" onclick="appendfriend(<?php echo $member['id']; echo ','; echo $allmember['id'] ?>)" id="dropdown-member-icon<?php echo $allmember['id']?>">
+                        <i class="fas fa-user-plus"></i>
+                        </div>
+                        <?php 
+                            }; 
+                        ?>
+                    </a>
+                    <?php 
+                            };
+                        };
+                    ?>
+                </div>
+            </div>
+            <br/>
+            <br/>
             
             <div class="title">Friends</div>
         <?php

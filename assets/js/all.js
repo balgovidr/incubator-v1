@@ -126,7 +126,8 @@ function appendfriend($member_id,$friend_id) {
     data: {member_id: $member_id,friend_id: $friend_id},
     success: function (obj, textstatus) {
                   if( !('error' in obj) ) {
-                      yourVariable = obj.result;
+                    $remove_elem=document.getElementById("dropdown-member-icon"+$friend_id);
+                    document.getElementsByClassName("idea-dropdown").removeChild($remove_elem);
                   }
                   else {
                       console.log(obj.error);
@@ -220,22 +221,44 @@ function addtogroup($groupid,$memberid) {
 }
 
 //Update idea with new member
-function addfriendtoidea($ideaid,$memberid) {
+function addfriendtoidea($ideaid,$memberid,$friendname) {
+    $ideaid=Number($ideaid);
     jQuery.ajax({
-    type: "POST",
-    url: base_url+'/include/functions/add_friend_to_idea.php',
-    dataType: 'json',
-    data: {ideaid: $ideaid, memberid: $memberid},
-    success: function (obj, textstatus) {
-                  if( !('error' in obj) ) {
-                      yourVariable = obj.result;
-                  }
-                  else {
-                      console.log(obj.error);
-                  }
+        type: "POST",
+        url: base_url+'/include/functions/add_friend_to_idea.php',
+        dataType: 'json',
+        data: {ideaid: $ideaid, memberid: $memberid},
+        success: function (obj, textstatus) {
+            if( !('error' in obj) ) {
+                $( "#share-friend-title" ).after( '<div class="row" id="friend'+$memberid+'"><a class="adjust-size">'+$friendname+'</a><a class="fixed-size icon" onclick="removefriendfromidea('+$ideaid+','+$memberid+')"><i class="fas fa-user-minus"></i></a></div>' );
+                $remove_elem=document.getElementById("dropdown-idea"+$ideaid);
+                document.getElementById("idea-dropdown").removeChild($remove_elem);
             }
-});
-    document.getElementById($ideaid+','+$memberid).innerHTML="";
+            else {
+                console.log(obj.error);
+            }
+        }
+    });
+}
+
+//Remove member from idea
+function removefriendfromidea($ideaid,$friendid) {
+    $ideaid=Number($ideaid);
+    jQuery.ajax({
+        type: "POST",
+        url: base_url+'/include/functions/remove_friend_from_idea.php',
+        dataType: 'json',
+        data: {ideaid: $ideaid, friendid: $friendid},
+        success: function (obj, textstatus) {
+            if( !('error' in obj) ) {
+                $remove_elem=document.getElementById("friend"+$friendid);
+                document.getElementById("Share").removeChild($remove_elem);
+            }
+            else {
+                console.log(obj.error);
+            }
+        }
+    });
 }
 
 //Update idea with new group
@@ -247,19 +270,35 @@ function addgrouptoidea($ideaid,$groupid,$group_title) {
     data: {ideaid: $ideaid, groupid: $groupid},
     success: function (obj, textstatus) {
                   if( !('error' in obj) ) {
-                      yourVariable = obj.result;
+                    $( "#share-friend-title" ).after( '<div class="row" id="group'+$groupid+'"><a class="adjust-size">'+$group_title+'</a><a class="fixed-size icon" onclick="removegroupfromidea('+$ideaid+','+$groupid+')"><i class="fas fa-minus-circle"></i></a></div>' );
+                    $remove_elem=document.getElementById("dropdown-group"+$groupid);
+                    document.getElementById("group-dropdown").removeChild($remove_elem);
                   }
                   else {
                       console.log(obj.error);
                   }
             }
 });
-    $child_elem=document.createElement("A");
-    $child_elem.className="rows";
-    $child_elem.innerHTML=$group_title;
-    document.getElementById("share-group-add").appendChild($child_elem);
-    $remove_elem=document.getElementById("dropdown-group"+$groupid);
-    $remove_elem.parentNode.removeChild($remove_elem);
+}
+
+//Remove group from idea
+function removegroupfromidea($ideaid,$groupid) {
+    $ideaid=Number($ideaid);
+    jQuery.ajax({
+        type: "POST",
+        url: base_url+'/include/functions/remove_group_from_idea.php',
+        dataType: 'json',
+        data: {ideaid: $ideaid, groupid: $groupid},
+        success: function (obj, textstatus) {
+            if( !('error' in obj) ) {
+                $remove_elem=document.getElementById("group"+$groupid);
+                document.getElementById("Share").removeChild($remove_elem);
+            }
+            else {
+                console.log(obj.error);
+            }
+        }
+    });
 }
 
 /* Dropdown */

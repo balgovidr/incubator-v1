@@ -39,7 +39,7 @@ session_start();
 		<div class="content" style="background-image:url(<?php echo BASE_URL ?>/images/home/background-blur-clean-clear-531880.jpg)">
 			<div class="content-cover">
 				<div>
-					<img src="<?php echo BASE_URL ?>/images/home/brain.svg" class="icon"/>
+					<img src="<?php echo BASE_URL ?>/images/home/brain.svg" class="icon-image"/>
 				</div>
 				<div class="text uppercase right">
 					<div id="content2-text1">
