@@ -4,7 +4,7 @@ include_once('lib/database.php');
 $username = $_SESSION["username"];
 
 //Getting member details
-$member = mysqli_query($conn,"select * FROM tbl_member where username='".$username."'");
+$member = mysqli_query($conn,"SELECT * FROM tbl_member where username='".$username."'");
 $member = mysqli_fetch_array($member);
 ?>
 <HTML>
@@ -36,7 +36,7 @@ $member = mysqli_fetch_array($member);
         <?php
             
 //Getting ideas
-$ideas = mysqli_query($conn,"select * FROM tbl_ideas where member_id='".$member['id']."'");
+$ideas = mysqli_query($conn,"SELECT * FROM tbl_ideas where member_id='".$member['id']."'");
             
             while ($row = mysqli_fetch_array($ideas)) { ?>
         <div class="rows">
@@ -56,10 +56,23 @@ $ideas = mysqli_query($conn,"select * FROM tbl_ideas where member_id='".$member[
 //Getting ideas
 $ideas = mysqli_query($conn,"SELECT * FROM tbl_ideas WHERE share_friends LIKE '%#".$member['id']."#%'");
             
-            while ($row = mysqli_fetch_array($ideas)) { ?>
-        <a onclick="openModal();currentSlide(<?php echo $row['id'] ?>,'idea',<?php echo $member['id'] ?>)" class="rows link">
-            <?php echo $row['title'] ?>
-        </a>
+        while ($row = mysqli_fetch_array($ideas)) { ?>
+            <div class="rows">
+                <a onclick="openModal();currentSlide(<?php echo $row['id'] ?>,'idea',<?php echo $member['id'] ?>)" class="adjust-size link">
+                    <?php echo $row['title'] ?>
+                </a>
+                <div class="fixed-size" id="vote-count<?php echo $row['id'] ?>">
+                    <?php 
+                        if($row['votes']!='') {
+                            $vote_array=json_decode($row['votes']);
+                            echo count($vote_array);
+                        };
+                    ?>
+                </div>
+                <a class="fixed-size icon" onclick="VoteIdea(<?php echo $row['id'] ?>,<?php echo $member['id'] ?>,'public')">
+                    <i class="fas fa-heart"></i>
+                </a>
+            </div>
         <?php }
             
 $user_groups = mysqli_query($conn,"SELECT * FROM tbl_group WHERE members LIKE '%#".$member['id']."#%'");
@@ -77,8 +90,8 @@ $user_groups = mysqli_query($conn,"SELECT * FROM tbl_group WHERE members LIKE '%
     </div>
     
     <!-- The Modal/Lightbox -->
-<div id="myModal" class="modal">
-  <span class="close cursor" onclick="closeModal()">&times;</span>
+<div id="myModal" class="modal" onclick="console.log('outsideclick')">
+  <span id="closeModal" class="close cursor">&times;</span>
   <div class="modal-content">
           <!-- Contents are within the idea_description.php file -->
   </div>

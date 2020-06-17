@@ -1,9 +1,15 @@
 <?php
 include '../../lib/database.php';
   if(!empty($_REQUEST['id'])) {
+    
     $id = $_REQUEST['id'];
     $memberid = $_REQUEST['memberid'];
-    $ideas2 = mysqli_query($conn,"select * FROM tbl_ideas where id='".$id."'");
+    if (!is_numeric($id) || !is_numeric($memberid)) {
+      $id = 'error';
+      $memberid = 'error';
+    }
+    
+    $ideas2 = mysqli_query($conn,"SELECT * FROM tbl_ideas WHERE id='".$id."'");
     $ideas2 = mysqli_fetch_array($ideas2);
   };
 ?>
@@ -28,7 +34,7 @@ include '../../lib/database.php';
     $friends=explode("#",$ideas2['share_friends']);
     if ($ideas2['share_friends']!=null) {
       foreach ($friends as $friend) {
-        $friend = mysqli_query($conn,"select * FROM tbl_member where id='".$friend."'");
+        $friend = mysqli_query($conn,"SELECT * FROM tbl_member WHERE id='".$friend."'");
         $friend = mysqli_fetch_array($friend);
           if ($friend!=null) {
   ?>

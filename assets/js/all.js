@@ -42,6 +42,7 @@ function appendidea() {
 
 // Delete the idea
 function deleteidea($id) {
+    $id=parseInt($id);
     jQuery.ajax({
         type: "POST",
         url: base_url+'/include/functions/delete_idea.php',
@@ -71,9 +72,11 @@ function closeModal() {
 // Fetches contents for the ideas on lightbox open
 function currentSlide($id,$type,$memberid) {
     $(".modal-content").load(base_url+'/include/functions/'+$type+'_description.php', {'id': $id,'memberid': $memberid});
+    document.getElementById("closeModal").setAttribute("onclick","closeModal(),updateidea("+$id+")")
 }
 
 function updateidea($id) {
+    $id=parseInt($id);
     $desc=document.getElementsByClassName("ql-editor")[0].innerHTML;
     jQuery.ajax({
     type: "POST",
@@ -119,6 +122,8 @@ function opentab(evt, tabName) {
 
 //Add a friend
 function appendfriend($member_id,$friend_id) {
+    $member_id=parseInt($member_id);
+    $friend_id=parseInt($friend_id);
       jQuery.ajax({
     type: "POST",
     url: base_url+'/include/functions/append_friend.php',
@@ -141,6 +146,8 @@ function appendfriend($member_id,$friend_id) {
 
 //Accept friend request
 function updatefriend($member_id,$friend_id) {
+    $member_id=parseInt($member_id);
+    $friend_id=parseInt($friend_id);
       jQuery.ajax({
     type: "POST",
     url: base_url+'/include/functions/update_friend.php',
@@ -184,6 +191,7 @@ function appendgroup() {
 
 // Delete the group
 function deletegroup($id) {
+    $id=parseInt($id);
       jQuery.ajax({
     type: "POST",
     url: base_url+'/include/functions/delete_group.php',
@@ -202,7 +210,9 @@ function deletegroup($id) {
 }
 
 //Update group with new member
-function addtogroup($groupid,$memberid) {
+function addtogroup($groupid,$memberid,$membername) {
+    $groupid=parseInt($groupid);
+    $memberid=parseInt($memberid);
     jQuery.ajax({
     type: "POST",
     url: base_url+'/include/functions/addto_group.php',
@@ -210,19 +220,21 @@ function addtogroup($groupid,$memberid) {
     data: {groupid: $groupid, memberid: $memberid},
     success: function (obj, textstatus) {
                   if( !('error' in obj) ) {
-                      yourVariable = obj.result;
+                    $( "#group-member-title" ).after( '<div class="row" id="member'+$memberid+'"><a class="adjust-size">'+$membername+'</a><a class="fixed-size icon" onclick="removememberfromgroup('+$groupid+','+$memberid+')"><i class="fas fa-user-minus"></i></a></div>' );
+                    $remove_elem=document.getElementById("dropdown-friend"+$memberid);
+                    document.getElementById("friend-dropdown").removeChild($remove_elem);
                   }
                   else {
                       console.log(obj.error);
                   }
             }
 });
-    document.getElementById($groupid+','+$memberid).innerHTML="";
 }
 
 //Update idea with new member
 function addfriendtoidea($ideaid,$memberid,$friendname) {
-    $ideaid=Number($ideaid);
+    $ideaid=parseInt($ideaid);
+    $memberid=parseInt($memberid);
     jQuery.ajax({
         type: "POST",
         url: base_url+'/include/functions/add_friend_to_idea.php',
@@ -233,6 +245,8 @@ function addfriendtoidea($ideaid,$memberid,$friendname) {
                 $( "#share-friend-title" ).after( '<div class="row" id="friend'+$memberid+'"><a class="adjust-size">'+$friendname+'</a><a class="fixed-size icon" onclick="removefriendfromidea('+$ideaid+','+$memberid+')"><i class="fas fa-user-minus"></i></a></div>' );
                 $remove_elem=document.getElementById("dropdown-idea"+$ideaid);
                 document.getElementById("idea-dropdown").removeChild($remove_elem);
+                $remove_elem=document.getElementById("dropdown-idea"+$groupid);
+                document.getElementById("group-dropdown").removeChild($remove_elem);
             }
             else {
                 console.log(obj.error);
@@ -243,7 +257,7 @@ function addfriendtoidea($ideaid,$memberid,$friendname) {
 
 //Remove member from idea
 function removefriendfromidea($ideaid,$friendid) {
-    $ideaid=Number($ideaid);
+    $ideaid=parseInt($ideaid);
     jQuery.ajax({
         type: "POST",
         url: base_url+'/include/functions/remove_friend_from_idea.php',
@@ -261,8 +275,30 @@ function removefriendfromidea($ideaid,$friendid) {
     });
 }
 
+//Remove member from group
+function removememberfromgroup($groupid,$memberid) {
+    $groupid=parseInt($groupid);
+    jQuery.ajax({
+        type: "POST",
+        url: base_url+'/include/functions/remove_member_from_group.php',
+        dataType: 'json',
+        data: {groupid: $groupid, memberid: $memberid},
+        success: function (obj, textstatus) {
+            if( !('error' in obj) ) {
+                $remove_elem=document.getElementById("member"+$memberid);
+                document.getElementById("Members").removeChild($remove_elem);
+            }
+            else {
+                console.log(obj.error);
+            }
+        }
+    });
+}
+
 //Update idea with new group
 function addgrouptoidea($ideaid,$groupid,$group_title) {
+    $ideaid=parseInt($ideaid);
+    $groupid=parseInt($groupid);
     jQuery.ajax({
     type: "POST",
     url: base_url+'/include/functions/add_group_to_idea.php',
@@ -270,7 +306,7 @@ function addgrouptoidea($ideaid,$groupid,$group_title) {
     data: {ideaid: $ideaid, groupid: $groupid},
     success: function (obj, textstatus) {
                   if( !('error' in obj) ) {
-                    $( "#share-friend-title" ).after( '<div class="row" id="group'+$groupid+'"><a class="adjust-size">'+$group_title+'</a><a class="fixed-size icon" onclick="removegroupfromidea('+$ideaid+','+$groupid+')"><i class="fas fa-minus-circle"></i></a></div>' );
+                    $( "#share-group-title" ).after( '<div class="row" id="group'+$groupid+'"><a class="adjust-size">'+$group_title+'</a><a class="fixed-size icon" onclick="removegroupfromidea('+$ideaid+','+$groupid+')"><i class="fas fa-minus-circle"></i></a></div>' );
                     $remove_elem=document.getElementById("dropdown-group"+$groupid);
                     document.getElementById("group-dropdown").removeChild($remove_elem);
                   }
@@ -283,7 +319,8 @@ function addgrouptoidea($ideaid,$groupid,$group_title) {
 
 //Remove group from idea
 function removegroupfromidea($ideaid,$groupid) {
-    $ideaid=Number($ideaid);
+    $ideaid=parseInt($ideaid);
+    $groupid=parseInt($groupid);
     jQuery.ajax({
         type: "POST",
         url: base_url+'/include/functions/remove_group_from_idea.php',
@@ -301,6 +338,26 @@ function removegroupfromidea($ideaid,$groupid) {
     });
 }
 
+
+//Vote for an idea
+function VoteIdea($IdeaId,$MemberId,$VoteType) {
+    $IdeaId=parseInt($IdeaId);
+    $MemberId=parseInt($MemberId);
+    jQuery.ajax({
+        type: "POST",
+        url: base_url+'/include/functions/vote_idea.php',
+        dataType: 'json',
+        data: {IdeaId: $IdeaId, MemberId: $MemberId, VoteType: $VoteType},
+        success: function (obj, textstatus) {
+            if( !('error' in obj) ) {
+                $("#vote-count"+$IdeaId).load(" #vote-idea"+$IdeaId+" > *");
+            }
+            else {
+                console.log(obj.error);
+            }
+        }
+    });
+}
 /* Dropdown */
 function dropdown($name) {
   document.getElementById($name).classList.toggle("show");

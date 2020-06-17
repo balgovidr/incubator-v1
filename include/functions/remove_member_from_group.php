@@ -1,12 +1,12 @@
 <?php
 include '../../lib/database.php';
 
-$stmt = mysqli_prepare($conn, "UPDATE tbl_ideas SET share_friends= REPLACE(share_friends, ?, '') WHERE id= ?");
-mysqli_stmt_bind_param($stmt, 'si', $deleteterm, $ideaid);
+$stmt = mysqli_prepare($conn, "UPDATE tbl_group SET members= REPLACE(members, ?, '') WHERE id= ?");
+mysqli_stmt_bind_param($stmt, 'si', $deleteterm, $groupid);
 
-$friendid=$_POST['friendid'];
-$deleteterm="#".$friendid."#";
-$ideaid=$_POST['ideaid'];
+$groupid=$_POST['groupid'];
+$memberid=$_POST['memberid'];
+$deleteterm="#".$memberid."#";
 
 /* execute prepared statement */
 if (mysqli_stmt_execute($stmt)) {
