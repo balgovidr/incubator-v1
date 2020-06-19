@@ -16,8 +16,22 @@ if (! empty($_POST["signup-btn"])) {
 <BODY>
 	<form name="sign-up" action="" method="post" class="sign-up-container"
 		onsubmit="return signupValidation()">
-		<div class="signup-heading">Changed</div>
-	<?php 
+		<div class="signup-heading">Registration</div>
+	<div class="error-msg" id="error-msg"></div>
+				<input class="input-box" type="text" name="firstname"
+					id="firstname" placeholder="First name">
+				<input class="input-box" type="text" name="lastname"
+					id="lastname" placeholder="Last name">
+				<input class="input-box" type="text" name="signup-username"
+					id="signup-username" placeholder="Username">
+				<input class="input-box" type="email" name="email" id="email" placeholder="Email">
+				<input class="input-box" type="password"
+					name="signup-password" id="signup-password" placeholder="Password">
+				<input class="input-box" type="password"
+					name="confirm-password" id="confirm-password" placeholder="Confirm password">
+			<input class="sign-up-btn button" type="submit" name="signup-btn"
+				id="signup-btn" value="SIGN UP">
+				<?php 
 	if(!empty($registrationResponse["status"]))
 	{
 	?>
@@ -38,20 +52,6 @@ if (! empty($_POST["signup-btn"])) {
 	<?php 
 	}
 	?>
-	<div class="error-msg" id="error-msg"></div>
-				<input class="input-box" type="text" name="firstname"
-					id="firstname" placeholder="First name">
-				<input class="input-box" type="text" name="lastname"
-					id="lastname" placeholder="Last name">
-				<input class="input-box" type="text" name="username"
-					id="username" placeholder="Username">
-				<input class="input-box" type="email" name="email" id="email" placeholder="Email">
-				<input class="input-box" type="password"
-					name="signup-password" id="signup-password" placeholder="Password">
-				<input class="input-box" type="password"
-					name="confirm-password" id="confirm-password" placeholder="Confirm password">
-			<input class="sign-up-btn button" type="submit" name="signup-btn"
-				id="signup-btn" value="SIGN UP">
 	</form>
 	<script>
 function signupValidation() {
@@ -59,22 +59,22 @@ function signupValidation() {
 	
     $("#firstname").removeClass("error-field");
     $("#lastname").removeClass("error-field");
-	$("#username").removeClass("error-field");
+	$("#signup-username").removeClass("error-field");
 	$("#email").removeClass("error-field");
 	$("#password").removeClass("error-field");
 	$("#confirm-password").removeClass("error-field");
 	
     var FirstName = $("#firstname").val();
     var LastName = $("#lastname").val();
-	var UserName = $("#username").val();
+	var UserName = $("#signup-username").val();
 	var email = $("#email").val();
 	var Password = $('#signup-password').val();
-    var ConfirmPassword = $('#confirm-password').val();
+	var ConfirmPassword = $('#confirm-password').val();
 	var emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
 	
     $("#firstname-info").html("").hide();
     $("#lastname-info").html("").hide();
-	$("#username-info").html("").hide();
+	$("#signup-username-info").html("").hide();
 	$("#email-info").html("").hide();
 
 	if (FirstName.trim() == "") {
@@ -88,8 +88,8 @@ function signupValidation() {
 		valid = false;
 	}
     if (UserName.trim() == "") {
-		$("#username-info").html("required.").css("color", "#ee0000").show();
-		$("#username").addClass("error-field");
+		$("#signup-username-info").html("required.").css("color", "#ee0000").show();
+		$("#signup-username").addClass("error-field");
 		valid = false;
 	}
 	if (email == "") {

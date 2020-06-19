@@ -37,7 +37,7 @@ class Member
             $query = 'INSERT INTO tbl_member (username, password, email, firstname, lastname) VALUES (?, ?, ?, ?, ?)';
             $paramType = 'sssss';
             $paramValue = array(
-                $_POST["username"],
+                $_POST["signup-username"],
                 $hashedPassword,
                 $_POST["email"],
                 $_POST["firstname"],
@@ -66,9 +66,9 @@ class Member
 
     public function loginMember()
     {
-        $loginUserResult = $this->getMember($_POST["username"]);
-        if (! empty($_POST["signup-password"])) {
-            $password = $_POST["signup-password"];
+        $loginUserResult = $this->getMember($_POST["signin-username"]);
+        if (! empty($_POST["signin-password"])) {
+            $password = $_POST["signin-password"];
         }
         $hashedPassword = $loginUserResult[0]["password"];
         $loginPassword = 0;

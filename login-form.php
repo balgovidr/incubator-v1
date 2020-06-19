@@ -12,10 +12,10 @@ if (! empty($_POST["login-btn"])) {
 		<?php if(!empty($loginResult)){?>
 		<div class="error-msg"><?php echo $loginResult;?></div>
 		<?php }?>
-			<input class="input-box" type="text" name="username"
-						id="username" placeholder="Username">
+			<input class="input-box" type="text" name="signin-username"
+						id="signin-username" placeholder="Username">
 			<input class="input-box" type="password"
-						name="signup-password" id="signup-password" placeholder="Password">
+						name="signin-password" id="signin-password" placeholder="Password">
 			<input class="button" type="submit" name="login-btn"
 					id="login-btn" value="Login">
 
@@ -25,23 +25,23 @@ if (! empty($_POST["login-btn"])) {
 	<script>
 function loginValidation() {
 	var valid = true;
-	$("#username").removeClass("error-field");
+	$("#signin-username").removeClass("error-field");
 	$("#password").removeClass("error-field");
 	
-	var UserName = $("#username").val();
-	var Password = $('#signup-password').val();
+	var UserName = $("#signin-username").val();
+	var Password = $('#signin-password').val();
     
-	$("#username-info").html("").hide();
+	$("#signin-username-info").html("").hide();
 	$("#email-info").html("").hide();
 
 	if (UserName.trim() == "") {
-		$("#username-info").html("required.").css("color", "#ee0000").show();
-		$("#username").addClass("error-field");
+		$("#signin-username-info").html("required.").css("color", "#ee0000").show();
+		$("#signin-username").addClass("error-field");
 		valid = false;
 	}
 	if (Password.trim() == "") {
-		$("#signup-password-info").html("required.").css("color", "#ee0000").show();
-		$("#signup-password").addClass("error-field");
+		$("#signin-password-info").html("required.").css("color", "#ee0000").show();
+		$("#signin-password").addClass("error-field");
 		valid = false;
 	}
 	if (valid == false) {
