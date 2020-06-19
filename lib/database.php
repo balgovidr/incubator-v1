@@ -10,4 +10,5 @@
   exit();
 };
 DEFINE('BASE_URL','http://localhost/incubator-v1');
+DEFINE('MAIL_URL','incubator.gq');
 ?>
