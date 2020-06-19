@@ -17,7 +17,7 @@
         ],
         'Subject' => "Confirm your email",
         'TextPart' => "Confirmation email", 
-        'HTMLPart' => "<h3>Hi ".$MemberFirstName.", welcome to <a style='text-decoration:none;color:href='".BASE_URL."'>".MAIL_URL."</a>!</h3><br />May the delivery force be with you!",
+        'HTMLPart' => "<h3>Hi ".$MemberFirstName.", welcome to <a style='text-decoration:none;color:#455a64;' href='".BASE_URL."'>".MAIL_URL."</a>!</h3><br />Please click on the link below to verify your email address.<br />",
         'CustomID' => "AppGettingStartedTest"
       ]
     ]

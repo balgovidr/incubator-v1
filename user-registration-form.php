@@ -16,7 +16,7 @@ if (! empty($_POST["signup-btn"])) {
 <BODY>
 	<form name="sign-up" action="" method="post" class="sign-up-container"
 		onsubmit="return signupValidation()">
-		<div class="signup-heading">Registration</div>
+		<div class="signup-heading">Changed</div>
 	<?php 
 	if(!empty($registrationResponse["status"]))
 	{
