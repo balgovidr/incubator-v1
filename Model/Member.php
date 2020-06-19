@@ -12,25 +12,43 @@ class Member
         $this->ds = new DataSource();
     }
 
-    public function isMemberExists($email)
-    {
-        $query = 'SELECT * FROM tbl_member where email = ?';
+    public function isMemberExists($email,$username)
+    {   
+        $value=0;
+        $query = 'SELECT * FROM tbl_member where username = ?';
         $paramType = 's';
         $paramValue = array(
-            $email
+            $username
         );
         $insertRecord = $this->ds->select($query, $paramType, $paramValue);
         $count = 0;
         if (is_array($insertRecord)) {
             $count = count($insertRecord);
         }
-        return $count;
+        if ($count > 0) {
+            $value=-1;
+        }
+
+        $query2 = 'SELECT * FROM tbl_member where email = ?';
+        $paramType2 = 's';
+        $paramValue2 = array(
+            $email
+        );
+        $insertRecord2 = $this->ds->select($query2, $paramType2, $paramValue2);
+        $count = 0;
+        if (is_array($insertRecord2)) {
+            $count = count($insertRecord2);
+        }
+        if ($count > 0) {
+            $value=1;
+        }
+        return $value;
     }
 
     public function registerMember()
     {
-        $result = $this->isMemberExists($_POST["email"]);
-        if ($result < 1) {
+        $result = $this->isMemberExists($_POST["email"],$_POST["signup-username"]);
+        if ($result == 0) {
             if (! empty($_POST["signup-password"])) {
                 $hashedPassword = password_hash($_POST["signup-password"], PASSWORD_DEFAULT);
             }
@@ -45,10 +63,12 @@ class Member
             );
             $memberId = $this->ds->insert($query, $paramType, $paramValue);
             if(!empty($memberId)) {
-                $response = array("status" => "success", "message" => "You have registered successfully.");
+                $response = array("status" => "success", "message" => "You have registered successfully.", "username" => $_POST["signup-username"]);
             }
         } else if ($result == 1) {
             $response = array("status" => "error", "message" => "Email already exists.");
+        } else if ($result == -1) {
+            $response = array("status" => "error", "message" => "Username already exists.");
         }
         return $response;
     }

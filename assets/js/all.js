@@ -358,6 +358,34 @@ function VoteIdea($IdeaId,$MemberId,$VoteType) {
         }
     });
 }
+
+//Confirm email
+function ConfirmEmail($MemberUsername) {
+    console.log('confirmemail')
+    jQuery.ajax({
+        type: "POST",
+        url: base_url+'/assets/mailer/confirm_email.php',
+        dataType: 'json',
+        data: {MemberUsername: $MemberUsername},
+        success: function (obj, textstatus) {
+            if( !('error' in obj) ) {
+            }
+            else {
+                console.log(obj.error);
+            }
+        }
+    });
+}
+
+//Toggle display of element from none to flex
+function ToggleDisplay($ElementId) {
+    var x = document.getElementById($ElementId);
+    if (x.style.display === "none") {
+      x.style.display = "flex";
+    } else {
+      x.style.display = "none";
+    }
+  }
 /* Dropdown */
 function dropdown($name) {
   document.getElementById($name).classList.toggle("show");

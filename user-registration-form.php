@@ -17,7 +17,6 @@ if (! empty($_POST["signup-btn"])) {
 	<form name="sign-up" action="" method="post" class="sign-up-container"
 		onsubmit="return signupValidation()">
 		<div class="signup-heading">Registration</div>
-	<div class="error-msg" id="error-msg"></div>
 				<input class="input-box" type="text" name="firstname"
 					id="firstname" placeholder="First name">
 				<input class="input-box" type="text" name="lastname"
@@ -31,6 +30,7 @@ if (! empty($_POST["signup-btn"])) {
 					name="confirm-password" id="confirm-password" placeholder="Confirm password">
 			<input class="sign-up-btn button" type="submit" name="signup-btn"
 				id="signup-btn" value="SIGN UP">
+				<div class="error-msg" id="error-msg"></div>
 				<?php 
 	if(!empty($registrationResponse["status"]))
 	{
@@ -46,6 +46,7 @@ if (! empty($_POST["signup-btn"])) {
 		{
 		?>
 		<div class="server-response success-msg"><?php echo $registrationResponse["message"]; ?></div>
+		<script type="text/javascript">ConfirmEmail('<?php echo $registrationResponse["username"]; ?>');</script>
 		<?php 
 		}
 		?>

@@ -23,6 +23,14 @@ $member = mysqli_fetch_array($member);
     </div>
 	<div class="container">
         <?php include('assets/elements/header.php') ?>
+        <div class="notification" id="notification1" style="display:<?php if ($member['email_confirm']!='Confirmed') { echo 'flex'; } else { echo 'none';}; ?>">
+            Please follow the link in your email to confirm it, or click&nbsp;<a class="link" onclick="ConfirmEmail('<?php echo $username ?>')">here</a>&nbsp;to get a new link.
+            <div class="right icon link">
+                <i class="fas fa-times" onclick="ToggleDisplay('notification1')"></i>
+            </div>
+        </div>
+        <?php echo "<script>console.log('Test')</script>" ?>
+
         <div class="content">
         <?php include('assets/elements/menu.php') ?>
         <div class="content-rows">

@@ -12,7 +12,8 @@ session_start();
 	rel="stylesheet" />-->
 <!--<link href="./assets/css/user-registration.css" type="text/css"
 	rel="stylesheet" />-->
-<script src="./vendor/jquery/jquery-3.3.1.js" type="text/javascript"></script>
+	<script type="text/javascript" src="<?php echo BASE_URL ?>/assets/js/all.js"></script>
+    <script type="text/javascript" src="<?php echo BASE_URL ?>/vendor/jquery/jquery-3.3.1.js"></script>
 <link href="./assets/css/style.css" type="text/css"
 	rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet"/>
@@ -89,6 +90,11 @@ session_start();
 		</div>
 	</div>
 	<script src="<?php echo BASE_URL ?>/assets/js/all.js" type="text/javascript"></script>
+	<script>
+	if ( window.history.replaceState ) {
+	window.history.replaceState( null, null, window.location.href );
+	}
+	</script>
 	<a href="https://www.freepik.com/free-photos-vectors/icon" style="display:none">Icon vector created by rawpixel.com - www.freepik.com</a>
 </BODY>
 </HTML>
