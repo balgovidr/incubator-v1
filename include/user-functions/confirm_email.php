@@ -41,7 +41,7 @@
             mysqli_stmt_bind_param($stmt2, 's', $MemberUsername);
             mysqli_stmt_execute($stmt2);
             mysqli_stmt_close($stmt2);
-            echo 'Your email has been confirmed!<br/>Click&nbsp;<a href="'.BASE_URL.'">here</a>&nbsp;to login.';
+            echo 'Your email has been confirmed!<br/>Click&nbsp;<a href="'.BASE_URL.'" style="display:inline">here</a>&nbsp;to login.';
           } else {
             echo 'Your link doesn&#39;t seem correct.<br/>Click&nbsp;<a class="link" style="display:inline" onclick="ConfirmEmail('.$MemberUsername.')">here</a>&nbsp;to get a new link.';
           };

@@ -97,6 +97,7 @@ class Member
         }
         if ($loginPassword == 1) {
             $_SESSION["username"] = $loginUserResult[0]["username"];
+            $_SESSION["MemberId"] = $loginUserResult[0]["id"];
             $url = "./home.php";
             header("Location: $url");
         } else if ($loginPassword == 0) {

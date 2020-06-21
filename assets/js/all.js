@@ -340,17 +340,18 @@ function removegroupfromidea($ideaid,$groupid) {
 
 
 //Vote for an idea
-function VoteIdea($IdeaId,$MemberId,$VoteType) {
+function VoteIdea($IdeaId,$VoteType) {
+
     $IdeaId=parseInt($IdeaId);
-    $MemberId=parseInt($MemberId);
     jQuery.ajax({
         type: "POST",
         url: base_url+'/include/functions/vote_idea.php',
         dataType: 'json',
-        data: {IdeaId: $IdeaId, MemberId: $MemberId, VoteType: $VoteType},
+        data: {IdeaId: $IdeaId, VoteType: $VoteType},
         success: function (obj, textstatus) {
             if( !('error' in obj) ) {
-                $("#vote-count"+$IdeaId).load(" #vote-idea"+$IdeaId+" > *");
+                $("#row-"+$IdeaId).load(" #row-"+$IdeaId+" > *");
+                console.log('Working')
             }
             else {
                 console.log(obj.error);
