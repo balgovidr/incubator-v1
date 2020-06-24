@@ -1,6 +1,7 @@
 <?php
+session_start();
 include '../../lib/database.php';
-$member_id=$_POST['member_id'];
+$member_id=$_SESSION["MemberId"];
 $friend_id=$_POST['friend_id'];
 
 if (is_numeric($member_id) && is_numeric($friend_id)) {

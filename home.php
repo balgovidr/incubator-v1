@@ -24,7 +24,7 @@ $member = mysqli_fetch_array($member);
     <!-- Sets the member's id so that it can be used later by some javascript functions-->
     <div style="display:none">
         <div id="member-id">
-            <?php echo $member['id'] ?>
+            <?php echo $MemberId ?>
         </div>
     </div>
 	<div class="container">
@@ -59,17 +59,17 @@ $member = mysqli_fetch_array($member);
         <?php
             
 //Getting ideas
-$ideas = mysqli_query($conn,"SELECT * FROM tbl_ideas where member_id='".$member['id']."'");
+$ideas = mysqli_query($conn,"SELECT * FROM tbl_ideas where member_id='".$MemberId."'");
             
             while ($row = mysqli_fetch_array($ideas)) { ?>
         <div class="rows">
             <!-- Onclick of each row of ideas opens the lightbox that contains details of the idea.-->
-            <a onclick="openModal();currentSlide(<?php echo $row['id'] ?>,'idea',<?php echo $member['id'] ?>)" class="link adjust-size">
+            <a onclick="openModal();currentSlide(<?php echo $row['id'] ?>,'idea',<?php echo $MemberId ?>)" class="link adjust-size">
                 <?php echo $row['title'] ?>
             </a>
-            <!-- Delete button for idea, only for ideas that you created -->
-            <a class="fixed-size icon" onclick="deleteidea(<?php echo $row['id'] ?>)">
-                <i class="fas fa-trash"></i>
+            <!-- Alternative button to open the lightbox and edit -->
+            <a class="fixed-size icon" onclick="openModal();currentSlide(<?php echo $row['id'] ?>,'idea',<?php echo $MemberId ?>)">
+                <i class="fas fa-edit"></i>
             </a>
         </div>
         <?php } ?>
@@ -79,14 +79,14 @@ $ideas = mysqli_query($conn,"SELECT * FROM tbl_ideas where member_id='".$member[
             <?php
             
 //Getting ideas, ones shared with you as friend
-$ideas = mysqli_query($conn,"SELECT * FROM tbl_ideas WHERE share_friends LIKE '%#".$member['id']."#%'");
+$ideas = mysqli_query($conn,"SELECT * FROM tbl_ideas WHERE share_friends LIKE '%#".$MemberId."#%'");
             
         while ($row = mysqli_fetch_array($ideas)) {
             //Turns the $DisplayTitle to 1 if the 'Ideas shared with you title' is to be showed
             $DisplayTitle=1; ?>
             <div class="rows" id="row-<?php echo $row['id'] ?>">
                 <!-- Onclick of each row opens up the lightbox containing more information about the idea -->
-                <a onclick="openModal();currentSlide(<?php echo $row['id'] ?>,'idea',<?php echo $member['id'] ?>)" class="adjust-size link">
+                <a onclick="openModal();currentSlide(<?php echo $row['id'] ?>,'idea',<?php echo $MemberId ?>)" class="adjust-size link">
                     <?php echo $row['title'] ?>
                 </a>
                 <!-- Count of votes for an idea -->
@@ -94,7 +94,13 @@ $ideas = mysqli_query($conn,"SELECT * FROM tbl_ideas WHERE share_friends LIKE '%
                     <?php 
                         if($row['votes']!='') {
                             //Counts the number of # and divides by 2
-                            echo substr_count($row['votes'],'#')/2;
+                            $VoteCount = substr_count($row['votes'],'#')/2;
+                            echo $VoteCount;
+                            if ($VoteCount>1) {
+                                echo ' votes';
+                            } else {
+                                echo ' vote';
+                            };
                         };
                     ?>
                     &nbsp;
@@ -105,10 +111,17 @@ $ideas = mysqli_query($conn,"SELECT * FROM tbl_ideas WHERE share_friends LIKE '%
                 if (strpos($row['votes'],'#'.$MemberId.',')!==FALSE) { echo '#4db6ac'; } ?>">
                     <i class="fas fa-heart"></i>
                 </a>
+                &nbsp;&nbsp;
+                <!-- Alternative button to open the lightbox and edit -->
+                <a class="fixed-size icon" onclick="openModal();currentSlide(<?php echo $row['id'] ?>,'idea',<?php echo $MemberId ?>)">
+                    <i class="fas fa-edit"></i>
+                </a>
             </div>
         <?php }
+
+        
 //Getting ideas, ones shared with you in a group
-$user_groups = mysqli_query($conn,"SELECT * FROM tbl_group WHERE members LIKE '%#".$member['id']."#%'");
+$user_groups = mysqli_query($conn,"SELECT * FROM tbl_group WHERE members LIKE '%#".$MemberId."#%'");
 
             while ($user_group = mysqli_fetch_array($user_groups)) {
                 $ideas = mysqli_query($conn,"SELECT * FROM tbl_ideas WHERE share_groups LIKE '%#".$user_group['id']."#%'");
@@ -117,7 +130,7 @@ $user_groups = mysqli_query($conn,"SELECT * FROM tbl_group WHERE members LIKE '%
                     //Turns the $DisplayTitle to 1 if the 'Ideas shared with you title' is to be showed
                     $DisplayTitle=1; ?>
         <div class="rows" id="row-<?php echo $row['id'] ?>">
-            <a onclick="openModal();currentSlide(<?php echo $row['id'] ?>,'idea',<?php echo $member['id'] ?>)" class="adjust-size link">
+            <a onclick="openModal();currentSlide(<?php echo $row['id'] ?>,'idea',<?php echo $MemberId ?>)" class="adjust-size link">
                 <?php echo $row['title'] ?>
             </a>
             <!-- Count of votes for an idea -->
@@ -125,7 +138,13 @@ $user_groups = mysqli_query($conn,"SELECT * FROM tbl_group WHERE members LIKE '%
                 <?php 
                     if($row['votes']!='') {
                         //Counts the number of # and divides by 2
-                        echo substr_count($row['votes'],'#')/2;
+                        $VoteCount = substr_count($row['votes'],'#')/2;
+                        echo $VoteCount;
+                        if ($VoteCount>1) {
+                            echo ' votes';
+                        } else {
+                            echo ' vote';
+                        };
                     };
                 ?>
                 &nbsp;
@@ -135,6 +154,11 @@ $user_groups = mysqli_query($conn,"SELECT * FROM tbl_group WHERE members LIKE '%
             //Checks if the user has already voted it and displays the voted colour
             if (strpos($row['votes'],'#'.$MemberId.',')!==FALSE) { echo '#4db6ac'; } ?>">
                 <i class="fas fa-heart"></i>
+            </a>
+            &nbsp;&nbsp;
+            <!-- Alternative button to open the lightbox and edit -->
+            <a class="fixed-size icon" onclick="openModal();currentSlide(<?php echo $row['id'] ?>,'idea',<?php echo $MemberId ?>)">
+                <i class="fas fa-edit"></i>
             </a>
         </div>
         <?php };};  

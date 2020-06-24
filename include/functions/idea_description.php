@@ -16,9 +16,16 @@ include '../../lib/database.php';
 <!-- Tab links -->
 <div class="tab fixed-size">
   <button class="tablinks" onclick="opentab(event, 'Edit')" id="defaultOpen">Edit</button>
-  <button class="tablinks" onclick="opentab(event, 'Share')">Share</button>
   <button class="tablinks" onclick="updateidea(<?php echo $id; ?>)" id="save<?php echo $id; ?>">Save</button>
+  <?php
+    //To make sure that the share tab is only available if the idea is yours
+      if ($ideas2['member_id']==$memberid) {
+  ?>
+  <button class="tablinks" onclick="opentab(event, 'Share')">Share</button>
   <button class="tablinks" onclick="opentab(event, 'Delete')">Delete</button>
+  <?php
+    };
+  ?>
 </div>
       
 <!-- Tab content -->
@@ -27,6 +34,11 @@ include '../../lib/database.php';
       <?php echo $ideas2['description']; ?>
   </div>
 </div>
+
+<?php
+//To make sure that the share tab is only available if the idea is yours
+  if ($ideas2['member_id']==$memberid) {
+?>
 
 <div id="Share" class="tabcontent adjust-size padding15">
   <div class="title" id="share-friend-title">Currently shared with:</div>
@@ -109,6 +121,7 @@ include '../../lib/database.php';
         <?php };
             };
         ?>
+      <!-- Additional bit for if you didn't find the person you were searching for -->
       <form onsubmit="Invite()" class="block-flex flex-column">
         <div class="permanent">
           <span><strong>Didn't find who you were looking for?</strong></span>
@@ -119,6 +132,7 @@ include '../../lib/database.php';
         </div>
         <div class="flex-row permanent">
           <span class="fixed-size">or invite them with their email below:&nbsp;&nbsp;&nbsp;</span>
+          <!-- Input box for inviting new users through their email -->
           <input class="adjust-size" type="text" id="invite-email" placeholder="Email of your friend..."/>&nbsp;
           <div onclick="Invite()" class="icon fixed-size"><i class="fas fa-angle-double-right"></i></div>
         </div>
@@ -160,6 +174,10 @@ include '../../lib/database.php';
     </div>
     </div>
 </div>
+
+<?php
+  }
+?>
 
     <script>
   var quill = new Quill('#editor', {

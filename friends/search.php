@@ -27,7 +27,7 @@ $member = mysqli_fetch_array($member);
             <input type="submit" value="Search" class="button fixed-size"/>
             
             </form>      
-            
+            <br/>
             <div class="title">Results</div>
 
         <?php

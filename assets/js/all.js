@@ -50,6 +50,7 @@ function deleteidea($id) {
         data: {id: $id},
         success: function (obj, textstatus) {
             if( !('error' in obj) ) {
+                closeModal();
                 $(".content-rows").load(" .content-rows > *");
             }
             else {
@@ -220,7 +221,7 @@ function addtogroup($groupid,$memberid,$membername) {
     data: {groupid: $groupid, memberid: $memberid},
     success: function (obj, textstatus) {
                   if( !('error' in obj) ) {
-                    $( "#group-member-title" ).after( '<div class="row" id="member'+$memberid+'"><a class="adjust-size">'+$membername+'</a><a class="fixed-size icon" onclick="removememberfromgroup('+$groupid+','+$memberid+')"><i class="fas fa-user-minus"></i></a></div>' );
+                    $( "#group-member-title" ).after( '<div class="rows" id="member'+$memberid+'"><a class="adjust-size">'+$membername+'</a><a class="fixed-size icon" onclick="removememberfromgroup('+$groupid+','+$memberid+')"><i class="fas fa-user-minus"></i></a></div>' );
                     $remove_elem=document.getElementById("dropdown-friend"+$memberid);
                     document.getElementById("friend-dropdown").removeChild($remove_elem);
                   }
@@ -242,7 +243,7 @@ function addfriendtoidea($ideaid,$memberid,$friendname) {
         data: {ideaid: $ideaid, memberid: $memberid},
         success: function (obj, textstatus) {
             if( !('error' in obj) ) {
-                $( "#share-friend-title" ).after( '<div class="row" id="friend'+$memberid+'"><a class="adjust-size">'+$friendname+'</a><a class="fixed-size icon" onclick="removefriendfromidea('+$ideaid+','+$memberid+')"><i class="fas fa-user-minus"></i></a></div>' );
+                $( "#share-friend-title" ).after( '<div class="rows" id="friend'+$memberid+'"><a class="adjust-size">'+$friendname+'</a><a class="fixed-size icon" onclick="removefriendfromidea('+$ideaid+','+$memberid+')"><i class="fas fa-user-minus"></i></a></div>' );
                 $remove_elem=document.getElementById("dropdown-idea"+$ideaid);
                 document.getElementById("idea-dropdown").removeChild($remove_elem);
                 $remove_elem=document.getElementById("dropdown-idea"+$groupid);
@@ -306,7 +307,7 @@ function addgrouptoidea($ideaid,$groupid,$group_title) {
     data: {ideaid: $ideaid, groupid: $groupid},
     success: function (obj, textstatus) {
                   if( !('error' in obj) ) {
-                    $( "#share-group-title" ).after( '<div class="row" id="group'+$groupid+'"><a class="adjust-size">'+$group_title+'</a><a class="fixed-size icon" onclick="removegroupfromidea('+$ideaid+','+$groupid+')"><i class="fas fa-minus-circle"></i></a></div>' );
+                    $( "#share-group-title" ).after( '<div class="rows" id="group'+$groupid+'"><a class="adjust-size">'+$group_title+'</a><a class="fixed-size icon" onclick="removegroupfromidea('+$ideaid+','+$groupid+')"><i class="fas fa-minus-circle"></i></a></div>' );
                     $remove_elem=document.getElementById("dropdown-group"+$groupid);
                     document.getElementById("group-dropdown").removeChild($remove_elem);
                   }

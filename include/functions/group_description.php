@@ -1,76 +1,109 @@
 <?php
+session_start();
 include '../../lib/database.php';
+$memberid = $_SESSION["MemberId"];
+
         if(!empty($_REQUEST['id'])) {
             $id = $_REQUEST['id'];
-            $memberid = $_REQUEST['memberid'];
-            if (!is_numeric($id) || !is_numeric($memberid)) {
+            echo '<script>console.log("'.$id.'")</script>';
+
+            //Making sure that $id is a number, prevent SQL injection
+            if (!is_numeric($id)) {
                 $id = 'error';
-                $memberid = 'error';
             }
 
-            $group2 = mysqli_query($conn,"select * FROM tbl_group where id='".$id."'");
+            $group2 = mysqli_query($conn,"SELECT * FROM tbl_group WHERE id='".$id."'");
             $group2 = mysqli_fetch_array($group2);
         };
+
+        //Fetching the ids of the members in this group
+        $members=explode("#",$group2['members']);
     ?>
       <!-- Tab links -->
       <div class="tab fixed-size">
         <button class="tablinks" onclick="opentab(event, 'Members')" id="defaultOpen">Members</button>
-        <button class="tablinks" onclick="opentab(event, 'Search')">Search</button>
         <button class="tablinks" onclick="opentab(event, 'Delete')">Delete</button>
       </div>
       
       <!-- Tab content -->
+      <!-- Member tab -->
       <div id="Members" class="tabcontent adjust-size padding15">
-          <div class="title" id="group-member-title">Members of this group</div>
-          <?php $members=explode("#",$group2['members']);
-          foreach ($members as $row2) {
-              $member2 = mysqli_query($conn,"select * FROM tbl_member where id='".$row2."'");
-              $member2 = mysqli_fetch_array($member2); ?>
-                <div class="rows" id="member<?php echo $member2['id'] ?>">
-                    <a class="adjust-size">
-                        <?php echo $member2['firstname'] ." " .$member2['lastname']; ?>
-                    </a>
-                    <a class="fixed-size icon" onclick="removememberfromgroup(<?php echo $id.','.$member2['id'] ?>)">
-                        <i class="fas fa-user-minus"></i>
-                    </a>
-          <?php
-          };
-          ?>
-      </div>
-      
-      <div id="Search" class="tabcontent adjust-size">
-          <div class="title">Search for friends to add to this group</div>
-          <form action="<?php echo BASE_URL ?>/friends/friend_search.php" method="post" class="search-container">
-            <input type="text" name="search" placeholder="Search for friends..." class="bar adjust-size"/>
-              <input type="number" name="group" style="display:none" value="<?php echo $id ?>"/>
-            <input type="submit" value="Search" class="button fixed-size"/>            
-            </form>
+        <div class="title">Search for friends to add to this group</div>
 
-
-            <div class="dropdown">
+        <div class="dropdown">
                 <button onclick="dropdown('friend-dropdown')" class="dropbtn">Select a friend <i class="fas fa-caret-down"></i></button>
+                <!-- The stuff in the div below only pops up when the button in the div above is clicked -->
                 <div id="friend-dropdown" class="dropdown-content">
-                <input type="text" placeholder="Search.." id="friend-input" class="dropdown-input" onkeyup="filterFunction('friend-dropdown','friend-input')">
+                    <!-- Input box where the search query or friend's name is typed -->
+                    <input type="text" placeholder="Search.." id="friend-input" class="dropdown-input" onkeyup="filterFunction('friend-dropdown','friend-input')">
                     <?php
-                    $user_friends = mysqli_query($conn,"select * FROM tbl_friends WHERE member1='".$memberid."' AND status='friend' OR member2='".$memberid."' AND status='friend'");
+                    //Fetching all of the member's friends
+                    $user_friends = mysqli_query($conn,"SELECT * FROM tbl_friends WHERE member1='".$memberid."' AND status='friend' OR member2='".$memberid."' AND status='friend'");
+                        //For each friend loop
                         while ($user_friend = mysqli_fetch_array($user_friends)) {
-                        if ($user_friend['member1']==$memberid) {
-                            $friend_id=$user_friend['member2'];
-                        } else {
-                            $friend_id=$user_friend['member1'];
-                        };
-                        $friend_profile = mysqli_query($conn,"select * FROM tbl_member where id='".$friend_id."'");
-                        $friend_profile = mysqli_fetch_array($friend_profile);
+                            //Figuring out what the friend's ID is
+                            if ($user_friend['member1']==$memberid) {
+                                $friend_id=$user_friend['member2'];
+                            } else {
+                                $friend_id=$user_friend['member1'];
+                            };
 
-                        if (!in_array($friend_profile['id'],$friends) || $friends==null) {
+                            //Only displaying the friend if they aren't already in the group
+                            if (!in_array($friend_id,$members) || $members==null) {
+                            
+                                //Fetching the friend's details
+                                $friend_profile = mysqli_query($conn,"SELECT * FROM tbl_member where id='".$friend_id."'");
+                                $friend_profile = mysqli_fetch_array($friend_profile);
                     ?>
-                <a onclick="addtogroup(<?php echo $id.",".$friend_profile['id'].",'".$friend_profile['firstname']." ".$friend_profile['lastname']."'" ?>)" id="dropdown-friend<?php echo $friend_profile['id']?>"><?php echo $friend_profile['firstname']." ".$friend_profile['lastname'] ?></a>
-                    <?php };
+                    <!-- Displaying the friend's name and option to add to group -->
+                    <a onclick="addtogroup(<?php echo $id.",".$friend_profile['id'].",'".$friend_profile['firstname']." ".$friend_profile['lastname']."'" ?>)" id="dropdown-friend<?php echo $friend_profile['id']?>"><?php echo $friend_profile['firstname']." ".$friend_profile['lastname'] ?></a>
+                    <?php 
+                            };
                         };
                     ?>
+
+                    <!-- Additional bit for if you didn't find the person you were searching for -->
+                    <form onsubmit="Invite()" class="block-flex flex-column">
+                        <div class="permanent">
+                        <span><strong>Didn't find who you were looking for?</strong></span>
+                        </div>
+                        <div class="flex-row permanent">
+                        <span>Make sure they've been added as your friend here:&nbsp;&nbsp;&nbsp;</span>
+                        <div class="button" href="<?php echo BASE_URL ?>/friends/index.php">Friends</div>
+                        </div>
+                        <div class="flex-row permanent">
+                        <span class="fixed-size">or invite them with their email below:&nbsp;&nbsp;&nbsp;</span>
+                        <!-- Input box for inviting new users through their email -->
+                        <input class="adjust-size" type="text" id="invite-email" placeholder="Email of your friend..."/>&nbsp;
+                        <div onclick="Invite()" class="icon fixed-size"><i class="fas fa-angle-double-right"></i></div>
+                        </div>
+                    </form>
 
                 </div>
             </div>
+
+        <div class="title" id="group-member-title">Members of this group</div>
+        <?php 
+            //For each of the members in the array, set the id as $row2
+            foreach ($members as $row2) {
+            //Only if the row2 ID is not blank
+            if ($row2!='') {
+                echo '<script>console.log("'.$row2.'")</script>';
+                $member2 = mysqli_query($conn,"SELECT * FROM tbl_member WHERE id='".$row2."'");
+                $member2 = mysqli_fetch_array($member2);
+        ?>
+            <!-- Member name and option to remove from group -->
+            <div class="rows" id="member<?php echo $member2['id'] ?>">
+                <a class="adjust-size">
+                    <?php echo $member2['firstname'] ." " .$member2['lastname']; ?>
+                </a>
+                <a class="fixed-size icon" onclick="removememberfromgroup(<?php echo $id.','.$member2['id'] ?>)">
+                    <i class="fas fa-user-minus"></i>
+                </a>
+            </div>
+        <?php
+            };};
+        ?>
       </div>
 
 <div id="Delete" class="tabcontent adjust-size">

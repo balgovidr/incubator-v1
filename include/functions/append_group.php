@@ -1,10 +1,11 @@
 <?php
+session_start();
 include '../../lib/database.php';
 
 $stmt = mysqli_prepare($conn, "INSERT INTO tbl_group(member_id, title) VALUES (?, ?)");
 mysqli_stmt_bind_param($stmt, 'is', $member_id, $title);
 
-$member_id = $_POST['member_id'];
+$member_id = $_SESSION["MemberId"];
 $title=$_POST['title'];
 
 /* execute prepared statement */
