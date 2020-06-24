@@ -1,10 +1,15 @@
 <?php
+session_start();
 include '../../lib/database.php';
+$member_id=$_SESSION["MemberId"];
 
-$stmt = mysqli_prepare($conn, "INSERT INTO tbl_ideas (member_id, title) VALUES (?, ?)");
-mysqli_stmt_bind_param($stmt, 'is', $member_id, $title);
+//Getting the default friends and groups to share idea with
+$stmt1 = mysqli_query($conn, "SELECT default_share_friends, default_share_groups FROM tbl_member WHERE id='".$member_id."'");
+$stmt1=mysqli_fetch_array($stmt1);
 
-$member_id=$_POST['member_id'];
+$stmt = mysqli_prepare($conn, "INSERT INTO tbl_ideas (member_id, title, share_friends, share_groups) VALUES (?, ?, ?, ?)");
+mysqli_stmt_bind_param($stmt, 'isss', $member_id, $title, $stmt1['default_share_friends'], $stmt1['default_share_groups']);
+
 $title=$_POST['title'];
 
 /* execute prepared statement */

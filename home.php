@@ -1,6 +1,9 @@
 <?php
 session_start();
 include_once('lib/database.php');
+if (empty($_SESSION["username"])) {
+    header("Location:".BASE_URL);
+}
 $username = $_SESSION["username"];
 $MemberId = $_SESSION["MemberId"];
 
@@ -29,12 +32,14 @@ $member = mysqli_fetch_array($member);
         <?php include('assets/elements/header.php') ?>
         <!-- Shows notification if you haven't confirmed your email -->
         <div class="notification" id="notification1" style="display:<?php if ($member['email_confirm']!='Confirmed') { echo 'flex'; } else { echo 'none';}; ?>">
-            Please follow the link in your email to confirm it, or click&nbsp;
-            <!-- On click executes javascript function to sent confirmation email, then changes the text within to Sent!, then closes the notification after a 2sec delay -->
-            <a class="link" onclick="ConfirmEmail('<?php echo $username ?>'); document.getElementById('notification1').innerHTML='Sent!'; setTimeout(function() {ToggleDisplay('notification1')}, 2000)">here</a>&nbsp;to get a new link.
+            <span>
+                Please follow the link in your email to confirm it, or click
+                <!-- On click executes javascript function to sent confirmation email, then changes the text within to Sent!, then closes the notification after a 2sec delay -->
+                <a class="link" onclick="ConfirmEmail('<?php echo $username ?>'); document.getElementById('notification1').innerHTML='Sent!'; setTimeout(function() {ToggleDisplay('notification1','flex')}, 2000)">here</a>&nbsp;to get a new link.
+            </span>
             <!-- Icon to close the notification -->
             <div class="right icon link">
-                <i class="fas fa-times" onclick="ToggleDisplay('notification1')"></i>
+                <i class="fas fa-times" onclick="ToggleDisplay('notification1','flex')"></i>
             </div>
         </div>
 
@@ -70,13 +75,15 @@ $ideas = mysqli_query($conn,"SELECT * FROM tbl_ideas where member_id='".$member[
         <?php } ?>
             <br/>
             <br/>
-            <div class="title">Ideas shared with you</div>
+            <div class="title hidden" id="ideas-shared-with-you">Ideas shared with you</div>
             <?php
             
 //Getting ideas, ones shared with you as friend
 $ideas = mysqli_query($conn,"SELECT * FROM tbl_ideas WHERE share_friends LIKE '%#".$member['id']."#%'");
             
-        while ($row = mysqli_fetch_array($ideas)) { ?>
+        while ($row = mysqli_fetch_array($ideas)) {
+            //Turns the $DisplayTitle to 1 if the 'Ideas shared with you title' is to be showed
+            $DisplayTitle=1; ?>
             <div class="rows" id="row-<?php echo $row['id'] ?>">
                 <!-- Onclick of each row opens up the lightbox containing more information about the idea -->
                 <a onclick="openModal();currentSlide(<?php echo $row['id'] ?>,'idea',<?php echo $member['id'] ?>)" class="adjust-size link">
@@ -90,9 +97,12 @@ $ideas = mysqli_query($conn,"SELECT * FROM tbl_ideas WHERE share_friends LIKE '%
                             echo substr_count($row['votes'],'#')/2;
                         };
                     ?>
+                    &nbsp;
                 </div>
                 <!-- Onclick adds member ID and vote type (public or anonymous) to the idea database -->
-                <a class="fixed-size icon" onclick="VoteIdea(<?php echo $row['id'] ?>,'public')">
+                <a class="fixed-size icon" onclick="VoteIdea(<?php echo $row['id'] ?>,'public')" style="color:<?php 
+                //Checks if the user has already voted it and displays the voted colour
+                if (strpos($row['votes'],'#'.$MemberId.',')!==FALSE) { echo '#4db6ac'; } ?>">
                     <i class="fas fa-heart"></i>
                 </a>
             </div>
@@ -103,7 +113,9 @@ $user_groups = mysqli_query($conn,"SELECT * FROM tbl_group WHERE members LIKE '%
             while ($user_group = mysqli_fetch_array($user_groups)) {
                 $ideas = mysqli_query($conn,"SELECT * FROM tbl_ideas WHERE share_groups LIKE '%#".$user_group['id']."#%'");
                 
-                while ($row = mysqli_fetch_array($ideas)) { ?>
+                while ($row = mysqli_fetch_array($ideas)) {
+                    //Turns the $DisplayTitle to 1 if the 'Ideas shared with you title' is to be showed
+                    $DisplayTitle=1; ?>
         <div class="rows" id="row-<?php echo $row['id'] ?>">
             <a onclick="openModal();currentSlide(<?php echo $row['id'] ?>,'idea',<?php echo $member['id'] ?>)" class="adjust-size link">
                 <?php echo $row['title'] ?>
@@ -116,13 +128,17 @@ $user_groups = mysqli_query($conn,"SELECT * FROM tbl_group WHERE members LIKE '%
                         echo substr_count($row['votes'],'#')/2;
                     };
                 ?>
+                &nbsp;
             </div>
             <!-- Onclick adds member ID and vote type (public or anonymous) to the idea database -->
-            <a class="fixed-size icon" onclick="VoteIdea(<?php echo $row['id'] ?>,'public')" style="color:<?php if (strpos($row['votes'],'#'.$MemberId.',')!==FALSE) { echo '#4db6ac'; } ?>">
+            <a class="fixed-size icon" onclick="VoteIdea(<?php echo $row['id'] ?>,'public')" style="color:<?php 
+            //Checks if the user has already voted it and displays the voted colour
+            if (strpos($row['votes'],'#'.$MemberId.',')!==FALSE) { echo '#4db6ac'; } ?>">
                 <i class="fas fa-heart"></i>
             </a>
         </div>
-        <?php };};  ?>
+        <?php };};  
+        ?>
         </div>
     </div>
     </div>
@@ -138,6 +154,12 @@ $user_groups = mysqli_query($conn,"SELECT * FROM tbl_group WHERE members LIKE '%
     
     <script type="text/javascript" src="<?php echo BASE_URL ?>/assets/js/all.js"></script>
     <script type="text/javascript" src="<?php echo BASE_URL ?>/vendor/jquery/jquery-3.3.1.js"></script>
+    <?php
+        //Checks if the title 'Ideas shared with you' is to be shown, toggles the display if it should
+        if ($DisplayTitle==1) {
+            echo "<script type='text/javascript'>ToggleDisplay2('ideas-shared-with-you','flex');</script>";
+        };
+    ?>
     
     <!-- Main Quill library -->
 <script src="//cdn.quilljs.com/1.3.6/quill.min.js"></script>

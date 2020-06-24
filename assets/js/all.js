@@ -362,7 +362,6 @@ function VoteIdea($IdeaId,$VoteType) {
 
 //Confirm email
 function ConfirmEmail($MemberUsername) {
-    console.log('confirmemail')
     jQuery.ajax({
         type: "POST",
         url: base_url+'/assets/mailer/confirm_email.php',
@@ -379,14 +378,71 @@ function ConfirmEmail($MemberUsername) {
 }
 
 //Toggle display of element from none to flex
-function ToggleDisplay($ElementId) {
+function ToggleDisplay($ElementId,$DisplayType) {
     var x = document.getElementById($ElementId);
     if (x.style.display === "none") {
-      x.style.display = "flex";
+      x.style.display = $DisplayType;
     } else {
       x.style.display = "none";
     }
-  }
+}
+//Toggle display of element from none to flex, some the other way around
+function ToggleDisplay2($ElementId,$DisplayType) {
+    var x = document.getElementById($ElementId);
+    if (x.style.display == $DisplayType) {
+      x.style.display = "none";
+    } else {
+      x.style.display = $DisplayType;
+    }
+}
+//Needs another bit of code to make sure that all styles on the menu is removed when back to normal
+window.onresize = ResetDisplayMenu;
+function ResetDisplayMenu() {
+    console.log('detects change in size');
+    //resize just happened, pixels changed
+    if (window.screen.width>600) {
+        var x = document.getElementById('menu');
+        x.style="";
+    }
+  };
+
+//Setting the default share option for a user based on the settings chosen for an idea
+function SetDefaultShare($IdeaId) {
+    $IdeaId=parseInt($IdeaId);
+    jQuery.ajax({
+        type: "POST",
+        url: base_url+'/include/functions/set_default_share.php',
+        dataType: 'json',
+        data: {IdeaId: $IdeaId},
+        success: function (obj, textstatus) {
+            if( !('error' in obj) ) {
+            }
+            else {
+                console.log(obj.error);
+            }
+        }
+    });
+}
+
+function Invite() {
+    console.log(base_url+'/include/functions/invite.php');
+    $InvitationEmail=document.getElementById("invite-email").value;
+    document.getElementById("invite-email").value='Sent!';
+    jQuery.ajax({
+        type: "POST",
+        url: base_url+'/include/functions/invite.php',
+        dataType: 'json',
+        data: {InvitationEmail: $InvitationEmail},
+        success: function (obj, textstatus) {
+            if( !('error' in obj) ) {
+            }
+            else {
+                console.log(obj.error);
+            }
+        }
+    });
+}
+
 /* Dropdown */
 function dropdown($name) {
   document.getElementById($name).classList.toggle("show");

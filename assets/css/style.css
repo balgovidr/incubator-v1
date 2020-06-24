@@ -14,12 +14,15 @@
 body {
     margin:0;
     overflow-x:hidden;
+    font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
 }
 .container {
 	font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
     width:100%;
     flex-direction:column;
 }
+
+/*Header*/
 .header {
     background-color:#333;
     display:flex;
@@ -68,6 +71,10 @@ a {
     overflow:auto;
     display:inherit;
 }
+.hidden {
+    display:none;
+}
+/*Menu*/
 .menu {
     flex-direction: column;
     font-size:15px;
@@ -113,7 +120,7 @@ a {
     flex-direction:row;
     padding-top:15px;
     width:100%;
-    border-bottom:1px solid #777;
+    border-bottom:1px solid rgba(230,227,230,1);
 }
 .rows:after {
     display:block;
@@ -285,6 +292,14 @@ a {
     padding:10px 15px;
     border-width:0px;
     cursor:pointer;
+    font-family: 'Montserrat', sans-serif;
+    transition:0.3s;
+    text-align: center;
+}
+.button:hover {
+    background-color:#3d4f58;
+    transition:0.3s;
+    color: #4db6ac;
 }
 .padding15 {
     padding:15px;
@@ -369,6 +384,24 @@ a {
 
 .dropdown a:hover {background-color: #ddd;}
 
+.dropdown .permanent {
+    min-height:25px;
+    padding:2px 16px;
+    display: flex;
+    align-items: center;
+    flex-wrap:wrap;
+}
+.dropdown .permanent:first-child {
+    padding-top:15px;
+    border-top:1px solid #e3e3e3;
+    margin-top:5px;
+}
+.dropdown .permanent .button {
+    padding:3px 15px;
+}
+.font-13 {
+    font-size:13px;
+}
 .show {display: block;}
 
 /* Homepage code */
@@ -383,6 +416,9 @@ a {
     padding:5px 15px;
     font-size: 14px;
     font-weight:normal;
+}
+.notification a {
+    display:inline;
 }
 .home .content {
     min-height:100vh;
@@ -523,5 +559,27 @@ a {
     }
     .signup-heading {
         font-size:9vw;
+    }
+}
+
+/*Header on mobiles*/
+@media screen and (max-width: 600px) {
+    #header-menu-button {
+        display:flex;
+        padding-right:20px;
+        overflow:hidden;
+    }
+    #header-profile {
+        display:none;
+    }
+    .header {
+        justify-content:flex-start;
+    }
+    #menu {
+        display:none;
+        min-width:200px;
+    }
+    #menu-profile {
+        display:block;
     }
 }

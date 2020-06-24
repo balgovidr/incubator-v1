@@ -101,16 +101,18 @@ $requests = mysqli_query($conn,"select * FROM tbl_friends where member2='".$memb
             
             while ($row = mysqli_fetch_array($requests)) { ?>
         <div class="rows">
-            <?php 
-                if ($row['member1']==$member['id']) {
-                    $friend_id=$row['member2'];
-                } else {
-                    $friend_id=$row['member1'];
-                }
-            $friend_profile = mysqli_query($conn,"select * FROM tbl_member where id='".$friend_id."'");
-$friend_profile = mysqli_fetch_array($friend_profile);
-                echo $friend_profile['firstname']." ".$friend_profile['lastname'];
-            ?>
+            <div class="adjust-size">
+                <?php 
+                    if ($row['member1']==$member['id']) {
+                        $friend_id=$row['member2'];
+                    } else {
+                        $friend_id=$row['member1'];
+                    }
+                $friend_profile = mysqli_query($conn,"select * FROM tbl_member where id='".$friend_id."'");
+        $friend_profile = mysqli_fetch_array($friend_profile);
+                    echo $friend_profile['firstname']." ".$friend_profile['lastname'];
+                ?>
+            </div>
             <a class="icon fixed-size" onclick="updatefriend(<?php echo $member['id']; echo ','; echo $friend_profile['id'] ?>)" id="reqrec<?php echo $member['id']; echo ','; echo $friend_profile['id'] ?>">
                 <i class="fas fa-user-check"></i>
             </a>

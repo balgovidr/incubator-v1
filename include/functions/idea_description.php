@@ -1,12 +1,12 @@
 <?php
+session_start();
 include '../../lib/database.php';
   if(!empty($_REQUEST['id'])) {
     
     $id = $_REQUEST['id'];
-    $memberid = $_REQUEST['memberid'];
-    if (!is_numeric($id) || !is_numeric($memberid)) {
+    $memberid = $_SESSION["MemberId"];
+    if (!is_numeric($id)) {
       $id = 'error';
-      $memberid = 'error';
     }
     
     $ideas2 = mysqli_query($conn,"SELECT * FROM tbl_ideas WHERE id='".$id."'");
@@ -77,29 +77,52 @@ include '../../lib/database.php';
     ?>
   <br/>
   <br/>
+  <!-- Search function to find friends to share it with -->
   <div class="title">Find more friends to share this idea with:</div>
   <div class="dropdown">
     <button onclick="dropdown('idea-dropdown')" class="dropbtn">Select a friend <i class="fas fa-caret-down"></i></button>
+    <!-- All of the stuff in the div below is hidden until the dropdown is activated by the user-->
     <div id="idea-dropdown" class="dropdown-content">
+      <!-- Search bar is always shown when dropdown is selected-->
       <input type="text" placeholder="Search.." id="idea-input" class="dropdown-input" onkeyup="filterFunction('idea-dropdown','idea-input')">
         <?php
+          //This script finds all of the friends of the user to be displayed to them
           $user_friends = mysqli_query($conn,"select * FROM tbl_friends WHERE member1='".$memberid."' AND status='friend' OR member2='".$memberid."' AND status='friend'");
             while ($user_friend = mysqli_fetch_array($user_friends)) {
+              //Goes through all of the rows of friends found from the tbl_friends table
               if ($user_friend['member1']==$memberid) {
+                //If the column member1 has the user's id, the 2nd column is the friend's id
                 $friend_id=$user_friend['member2'];
               } else {
+                //If the column member2 has the user's id, the 1st column is the friend's id
                 $friend_id=$user_friend['member1'];
               };
+              //Fetches the friend's details
               $friend_profile = mysqli_query($conn,"select * FROM tbl_member where id='".$friend_id."'");
               $friend_profile = mysqli_fetch_array($friend_profile);
-
+              
+              //If the idea is already shared with a friend, then their name is not repeated again in the list
               if (!in_array($friend_profile['id'],$friends) || $friends==null) {
         ?>
+      <!-- The name of the friend is shown, this will be filtered using the search bar. On select, the friend is added to the idea's shared list -->
       <a onclick="addfriendtoidea(<?php echo $id.",".$friend_profile['id'].",'".$friend_profile['firstname']." ".$friend_profile['lastname']."'" ?>)" id="dropdown-idea<?php echo $friend_profile['id']?>"><?php echo $friend_profile['firstname']." ".$friend_profile['lastname'] ?></a>
         <?php };
             };
         ?>
-
+      <form onsubmit="Invite()" class="block-flex flex-column">
+        <div class="permanent">
+          <span><strong>Didn't find who you were looking for?</strong></span>
+        </div>
+        <div class="flex-row permanent">
+          <span>Make sure they've been added as your friend here:&nbsp;&nbsp;&nbsp;</span>
+          <div class="button" href="<?php echo BASE_URL ?>/friends/index.php">Friends</div>
+        </div>
+        <div class="flex-row permanent">
+          <span class="fixed-size">or invite them with their email below:&nbsp;&nbsp;&nbsp;</span>
+          <input class="adjust-size" type="text" id="invite-email" placeholder="Email of your friend..."/>&nbsp;
+          <div onclick="Invite()" class="icon fixed-size"><i class="fas fa-angle-double-right"></i></div>
+        </div>
+      </form>
     </div>
   </div>
     
@@ -120,6 +143,11 @@ include '../../lib/database.php';
 
     </div>
   </div>
+  </br>
+  </br>
+  
+  <!--Creating a default sharing friends and groups using the settings above -->
+  <div class="button" id="DefaultShareButton" onclick="SetDefaultShare(<?php echo $id ?>); document.getElementById('DefaultShareButton').innerHTML='Done!'">Make this your default sharing setting</div>
 
 </div>
 
