@@ -168,7 +168,7 @@ $user_groups = mysqli_query($conn,"SELECT * FROM tbl_group WHERE members LIKE '%
     </div>
     
     <!-- The Modal/Lightbox -->
-<div id="myModal" class="modal" onclick="console.log('outsideclick')">
+<div id="myModal" class="modal">
   <span id="closeModal" class="close cursor">&times;</span>
   <div class="modal-content">
           <!-- Contents are within the idea_description.php file -->

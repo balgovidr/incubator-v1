@@ -5,7 +5,6 @@ $memberid = $_SESSION["MemberId"];
 
         if(!empty($_REQUEST['id'])) {
             $id = $_REQUEST['id'];
-            echo '<script>console.log("'.$id.'")</script>';
 
             //Making sure that $id is a number, prevent SQL injection
             if (!is_numeric($id)) {
@@ -18,6 +17,9 @@ $memberid = $_SESSION["MemberId"];
 
         //Fetching the ids of the members in this group
         $members=explode("#",$group2['members']);
+
+        //Fetching the ids of temporary members in this group
+        $TempMembers=explode("#",$group2['temp_member']);
     ?>
       <!-- Tab links -->
       <div class="tab fixed-size">
@@ -62,6 +64,20 @@ $memberid = $_SESSION["MemberId"];
                         };
                     ?>
 
+                    <!-- Display the member's friends who are temporary members -->
+                    <?php
+                    //This script finds all of the temporary member friends of the user to be displayed to them
+                    $TempMemberFriends = mysqli_query($conn,"SELECT * FROM tbl_temp_member WHERE friend LIKE '%#".$memberid."#%'");
+                    while ($TempMemberFriend = mysqli_fetch_array($TempMemberFriends)) {
+                        //If the group already includes the temporary member, then their name is not repeated again in the list
+                        if (!in_array($TempMemberFriend['id'],$TempMembers) || $TempMembers==null) {
+                    ?>
+                <!-- The name of the temporary member is shown, this will be filtered using the search bar. On select, the temporary member is added to the group's list -->
+                <a onclick="AddTempMemberToGroup(<?php echo $id.",".$TempMemberFriend['id'].",'".$TempMemberFriend['email']."'" ?>)" id="dropdown-temp-member-<?php echo $TempMemberFriend['id']?>"><?php echo $TempMemberFriend['email'] ?></a>
+                    <?php };
+                        };
+                    ?>
+
                     <!-- Additional bit for if you didn't find the person you were searching for -->
                     <form onsubmit="Invite()" class="block-flex flex-column">
                         <div class="permanent">
@@ -88,7 +104,6 @@ $memberid = $_SESSION["MemberId"];
             foreach ($members as $row2) {
             //Only if the row2 ID is not blank
             if ($row2!='') {
-                echo '<script>console.log("'.$row2.'")</script>';
                 $member2 = mysqli_query($conn,"SELECT * FROM tbl_member WHERE id='".$row2."'");
                 $member2 = mysqli_fetch_array($member2);
         ?>
@@ -98,6 +113,28 @@ $memberid = $_SESSION["MemberId"];
                     <?php echo $member2['firstname'] ." " .$member2['lastname']; ?>
                 </a>
                 <a class="fixed-size icon" onclick="removememberfromgroup(<?php echo $id.','.$member2['id'] ?>)">
+                    <i class="fas fa-user-minus"></i>
+                </a>
+            </div>
+        <?php
+            };};
+        ?>
+
+        <!-- To display a list of temporary members in the group -->
+        <?php 
+            //For each of the temp members in the array, set the id as $row2
+            foreach ($TempMembers as $TempMemberId) {
+            //Only if the row2 ID is not blank
+            if ($TempMemberId!='') {
+                $TempMember = mysqli_query($conn,"SELECT email FROM tbl_temp_member WHERE id='".$TempMemberId."'");
+                $TempMember = mysqli_fetch_array($TempMember);
+        ?>
+            <!-- Temp member email and option to remove from group -->
+            <div class="rows" id="temp-member-<?php echo $TempMemberId ?>">
+                <a class="adjust-size">
+                    <?php echo $TempMember['email']; ?>
+                </a>
+                <a class="fixed-size icon" onclick="RemoveTempMemberFromGroup(<?php echo $id.','.$TempMemberId ?>)">
                     <i class="fas fa-user-minus"></i>
                 </a>
             </div>

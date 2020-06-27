@@ -6,7 +6,6 @@ if (document.getElementById('clickbox')!=null) {
 document.getElementById('clickbox').addEventListener('keydown', (evt) => {
     if (evt.keyCode === 13) {
         evt.preventDefault();
-        console.log(document.title);
         if (document.title==='Incubator') {
             appendidea();
         };
@@ -73,7 +72,9 @@ function closeModal() {
 // Fetches contents for the ideas on lightbox open
 function currentSlide($id,$type,$memberid) {
     $(".modal-content").load(base_url+'/include/functions/'+$type+'_description.php', {'id': $id,'memberid': $memberid});
-    document.getElementById("closeModal").setAttribute("onclick","closeModal(),updateidea("+$id+")")
+    if ($type=='idea') {
+        document.getElementById("closeModal").setAttribute("onclick","closeModal(),updateidea("+$id+")");
+    };
 }
 
 function updateidea($id) {
@@ -352,7 +353,6 @@ function VoteIdea($IdeaId,$VoteType) {
         success: function (obj, textstatus) {
             if( !('error' in obj) ) {
                 $("#row-"+$IdeaId).load(" #row-"+$IdeaId+" > *");
-                console.log('Working')
             }
             else {
                 console.log(obj.error);
@@ -423,9 +423,8 @@ function SetDefaultShare($IdeaId) {
         }
     });
 }
-/*
+
 function Invite() {
-    console.log(base_url+'/include/functions/invite.php');
     $InvitationEmail=document.getElementById("invite-email").value;
     document.getElementById("invite-email").value='Sent!';
     jQuery.ajax({
@@ -442,7 +441,7 @@ function Invite() {
         }
     });
 }
-*/
+
 /* Create a new temporary member if there isn't already one and invite them to the idea */
 function CreateAndInviteToIdea($IdeaId) {
     $InvitationEmail=document.getElementById("invite-email").value;
@@ -488,8 +487,6 @@ function InviteToIdea($InvitationEmail, $IdeaId) {
 }
 
 function AddTempMemberToIdea($TempMemberId, $IdeaId, $InvitationEmail) {
-    console.log($TempMemberId);
-    console.log($IdeaId);
     jQuery.ajax({
         type: "POST",
         url: base_url+'/include/functions/add_temp_member_to_idea.php',
@@ -521,6 +518,43 @@ function RemoveTempMemberFromIdea($IdeaId,$TempMemberId) {
             if( !('error' in obj) ) {
                 $remove_elem=document.getElementById("temp-member-"+$TempMemberId);
                 document.getElementById("Share").removeChild($remove_elem);
+            }
+            else {
+                console.log(obj.error);
+            }
+        }
+    });
+}
+
+//Update group with a temp member
+function AddTempMemberToGroup($GroupId,$TempMemberId,$TempMemberEmail) {
+    $GroupId=parseInt($GroupId);
+    $TempMemberId=parseInt($TempMemberId);
+    jQuery.ajax({
+        type: "POST",
+        url: base_url+'/include/functions/add_temp_member_to_group.php',
+        dataType: 'json',
+        data: {GroupId: $GroupId, TempMemberId: $TempMemberId},
+        success: function () {
+            $( "#group-member-title" ).after( '<div class="rows" id="temp-member-'+$TempMemberId+'"><a class="adjust-size">'+$TempMemberEmail+'</a><a class="fixed-size icon" onclick="RemoveTempMemberFromGroup('+$GroupId+','+$TempMemberId+')"><i class="fas fa-user-minus"></i></a></div>' );
+            $remove_elem=document.getElementById("dropdown-temp-member-"+$TempMemberId);
+            document.getElementById("friend-dropdown").removeChild($remove_elem);
+        }
+    });
+}
+
+//Remove temporary member from group
+function RemoveTempMemberFromGroup($GroupId,$TempMemberId) {
+    $GroupId=parseInt($GroupId);
+    jQuery.ajax({
+        type: "POST",
+        url: base_url+'/include/functions/remove_temp_member_from_group.php',
+        dataType: 'json',
+        data: {GroupId: $GroupId, TempMemberId: $TempMemberId},
+        success: function (obj, textstatus) {
+            if( !('error' in obj) ) {
+                $remove_elem=document.getElementById("temp-member-"+$TempMemberId);
+                document.getElementById("Members").removeChild($remove_elem);
             }
             else {
                 console.log(obj.error);
