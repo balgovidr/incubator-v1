@@ -244,7 +244,7 @@ function addfriendtoidea($ideaid,$memberid,$friendname) {
         success: function (obj, textstatus) {
             if( !('error' in obj) ) {
                 $( "#share-friend-title" ).after( '<div class="rows" id="friend'+$memberid+'"><a class="adjust-size">'+$friendname+'</a><a class="fixed-size icon" onclick="removefriendfromidea('+$ideaid+','+$memberid+')"><i class="fas fa-user-minus"></i></a></div>' );
-                $remove_elem=document.getElementById("dropdown-idea"+$ideaid);
+                $remove_elem=document.getElementById("dropdown-idea"+$memberid);
                 document.getElementById("idea-dropdown").removeChild($remove_elem);
                 $remove_elem=document.getElementById("dropdown-idea"+$groupid);
                 document.getElementById("group-dropdown").removeChild($remove_elem);
@@ -399,7 +399,6 @@ function ToggleDisplay2($ElementId,$DisplayType) {
 //Needs another bit of code to make sure that all styles on the menu is removed when back to normal
 window.onresize = ResetDisplayMenu;
 function ResetDisplayMenu() {
-    console.log('detects change in size');
     //resize just happened, pixels changed
     if (window.screen.width>600) {
         var x = document.getElementById('menu');
@@ -424,7 +423,7 @@ function SetDefaultShare($IdeaId) {
         }
     });
 }
-
+/*
 function Invite() {
     console.log(base_url+'/include/functions/invite.php');
     $InvitationEmail=document.getElementById("invite-email").value;
@@ -436,6 +435,92 @@ function Invite() {
         data: {InvitationEmail: $InvitationEmail},
         success: function (obj, textstatus) {
             if( !('error' in obj) ) {
+            }
+            else {
+                console.log(obj.error);
+            }
+        }
+    });
+}
+*/
+/* Create a new temporary member if there isn't already one and invite them to the idea */
+function CreateAndInviteToIdea($IdeaId) {
+    $InvitationEmail=document.getElementById("invite-email").value;
+    jQuery.ajax({
+        type: "POST",
+        url: base_url+'/include/functions/create_temp_member.php',
+        dataType: 'json',
+        data: {InvitationEmail: $InvitationEmail},
+        success: function (obj) {
+            if (isNaN(obj)==false) {
+                document.getElementById("invite-email").value='Sent!';
+                AddTempMemberToIdea(obj, $IdeaId, $InvitationEmail);
+                AddTempMemberToFriend($InvitationEmail);
+            }
+        }
+    });
+}
+
+function AddTempMemberToFriend($TempMemberEmail) {
+    jQuery.ajax({
+        type: "POST",
+        url: base_url+'/include/functions/add_temp_member_to_friend.php',
+        dataType: 'json',
+        data: {TempMemberEmail: $TempMemberEmail},
+        success: function (obj) {}
+    });
+}
+
+function InviteToIdea($InvitationEmail, $IdeaId) {
+    jQuery.ajax({
+        type: "POST",
+        url: base_url+'/include/functions/invite_to_idea.php',
+        dataType: 'json',
+        data: {InvitationEmail: $InvitationEmail, IdeaId: $IdeaId},
+        success: function (obj, textstatus) {
+            if( !('error' in obj) ) {
+            }
+            else {
+                console.log(obj.error);
+            }
+        }
+    });
+}
+
+function AddTempMemberToIdea($TempMemberId, $IdeaId, $InvitationEmail) {
+    console.log($TempMemberId);
+    console.log($IdeaId);
+    jQuery.ajax({
+        type: "POST",
+        url: base_url+'/include/functions/add_temp_member_to_idea.php',
+        dataType: 'json',
+        data: {TempMemberId: $TempMemberId, IdeaId: $IdeaId},
+        success: function (obj, textstatus) {
+            if( !('error' in obj) ) {
+                $( "#share-friend-title" ).after( '<div class="rows" id="temp-member'+$TempMemberId+'"><a class="adjust-size">'+$InvitationEmail+'</a><a class="fixed-size icon" onclick="RemoveTempMemberFromIdea('+$IdeaId+','+$TempMemberId+')"><i class="fas fa-user-minus"></i></a></div>' );
+                $remove_elem=document.getElementById("dropdown-idea-temp-member-"+$TempMemberId);
+                document.getElementById("idea-dropdown").removeChild($remove_elem);
+                InviteToIdea($InvitationEmail,$IdeaId);
+            }
+            else {
+                console.log(obj.error);
+            }
+        }
+    });
+}
+
+//Remove temporary member from idea
+function RemoveTempMemberFromIdea($IdeaId,$TempMemberId) {
+    $IdeaId=parseInt($IdeaId);
+    jQuery.ajax({
+        type: "POST",
+        url: base_url+'/include/functions/remove_temp_member_from_idea.php',
+        dataType: 'json',
+        data: {IdeaId: $IdeaId, TempMemberId: $TempMemberId},
+        success: function (obj, textstatus) {
+            if( !('error' in obj) ) {
+                $remove_elem=document.getElementById("temp-member-"+$TempMemberId);
+                document.getElementById("Share").removeChild($remove_elem);
             }
             else {
                 console.log(obj.error);

@@ -42,6 +42,7 @@ include '../../lib/database.php';
 
 <div id="Share" class="tabcontent adjust-size padding15">
   <div class="title" id="share-friend-title">Currently shared with:</div>
+  <!-- Friends or members that the idea has been shared with -->
   <?php 
     $friends=explode("#",$ideas2['share_friends']);
     if ($ideas2['share_friends']!=null) {
@@ -63,6 +64,30 @@ include '../../lib/database.php';
       };
     };
   ?>
+
+  <!-- Temporary members that the idea has been shared with -->
+  <?php 
+    $TempMembers=explode("#",$ideas2['share_temp_member']);
+    if ($ideas2['share_temp_member']!=null) {
+      foreach ($TempMembers as $TempMember) {
+        $TempMember = mysqli_query($conn,"SELECT * FROM tbl_temp_member WHERE id='".$friend."'");
+        $TempMember = mysqli_fetch_array($TempMember);
+          if ($TempMember!=null) {
+  ?>
+  <div class="rows" id="temp-member-<?php echo $TempMember['id'] ?>">
+    <a class="adjust-size">
+      <?php echo $TempMember['email']; ?>
+    </a>
+    <a class="fixed-size icon" onclick="RemoveTempMemberFromIdea(<?php echo $id.",".$TempMember['id'] ?>)">
+      <i class="fas fa-user-minus"></i>
+    </a>
+  </div>
+  <?php
+          };
+      };
+    };
+  ?>
+
   <br/>
   <br/>
   <div class="title" id="share-group-title">And shared with the groups:</div>
@@ -97,6 +122,7 @@ include '../../lib/database.php';
     <div id="idea-dropdown" class="dropdown-content">
       <!-- Search bar is always shown when dropdown is selected-->
       <input type="text" placeholder="Search.." id="idea-input" class="dropdown-input" onkeyup="filterFunction('idea-dropdown','idea-input')">
+        <!-- All of the member's friends who are also members -->
         <?php
           //This script finds all of the friends of the user to be displayed to them
           $user_friends = mysqli_query($conn,"select * FROM tbl_friends WHERE member1='".$memberid."' AND status='friend' OR member2='".$memberid."' AND status='friend'");
@@ -121,8 +147,22 @@ include '../../lib/database.php';
         <?php };
             };
         ?>
+        <!-- Display the member's friends who are temporary members -->
+        <?php
+          //This script finds all of the temporary member friends of the user to be displayed to them
+          $TempMemberFriends = mysqli_query($conn,"SELECT * FROM tbl_temp_member WHERE friend LIKE '%#".$memberid."#%'");
+            while ($TempMemberFriend = mysqli_fetch_array($TempMemberFriends)) {
+              //If the idea is already shared with a temporary member, then their name is not repeated again in the list
+              if (!in_array($TempMemberFriend['id'],$TempMembers) || $TempMembers==null) {
+        ?>
+      <!-- The name of the temporary member is shown, this will be filtered using the search bar. On select, the temporary member is added to the idea's shared list -->
+      <a onclick="AddTempMemberToIdea(<?php echo $TempMemberFriend['id'].",".$id.",'".$TempMemberFriend['email']."'" ?>)" id="dropdown-idea-temp-member-<?php echo $TempMemberFriend['id']?>"><?php echo $TempMemberFriend['email'] ?></a>
+        <?php };
+            };
+        ?>
+
       <!-- Additional bit for if you didn't find the person you were searching for -->
-      <form onsubmit="Invite()" class="block-flex flex-column">
+      <form onsubmit="CreateAndInviteToIdea(<?php echo $id ?>)" class="block-flex flex-column">
         <div class="permanent">
           <span><strong>Didn't find who you were looking for?</strong></span>
         </div>
@@ -134,7 +174,7 @@ include '../../lib/database.php';
           <span class="fixed-size">or invite them with their email below:&nbsp;&nbsp;&nbsp;</span>
           <!-- Input box for inviting new users through their email -->
           <input class="adjust-size" type="text" id="invite-email" placeholder="Email of your friend..."/>&nbsp;
-          <div onclick="Invite()" class="icon fixed-size"><i class="fas fa-angle-double-right"></i></div>
+          <div onclick="CreateAndInviteToIdea(<?php echo $id ?>)" class="icon fixed-size"><i class="fas fa-angle-double-right"></i></div>
         </div>
       </form>
     </div>
