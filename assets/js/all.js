@@ -28,14 +28,12 @@ function appendidea() {
             success: function (obj, textstatus) {
                 if( !('error' in obj) ) {
                     $(".content-rows").load(" .content-rows > *");
-                    console.log(obj);
-                    console.log(typeof(obj));
                     $data=JSON.parse(JSON.stringify(obj));
                     //Looping through the received array of temporary member emails and sending them emails
                     //The first row of the array is the Idea Id
                     $IdeaId = $data[0];
                     var i;
-                    for (i = 1; i < obj.length-1; i++) {
+                    for (i = 1; i < $data.length; i++) {
                         InviteToIdea($data[i], $IdeaId);
                     }
                 }
@@ -321,6 +319,15 @@ function addgrouptoidea($ideaid,$groupid,$group_title) {
                     $( "#share-group-title" ).after( '<div class="rows" id="group'+$groupid+'"><a class="adjust-size">'+$group_title+'</a><a class="fixed-size icon" onclick="removegroupfromidea('+$ideaid+','+$groupid+')"><i class="fas fa-minus-circle"></i></a></div>' );
                     $remove_elem=document.getElementById("dropdown-group"+$groupid);
                     document.getElementById("group-dropdown").removeChild($remove_elem);
+
+                    $data=JSON.parse(JSON.stringify(obj));
+                    //Looping through the received array of temporary member emails and sending them emails
+                    //The first row of the array is the Idea Id
+                    $IdeaId = $data[0];
+                    var i;
+                    for (i = 1; i < $data.length; i++) {
+                        InviteToIdea($data[i], $IdeaId);
+                    }
                   }
                   else {
                       console.log(obj.error);

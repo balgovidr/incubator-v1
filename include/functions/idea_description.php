@@ -67,8 +67,8 @@ include '../../lib/database.php';
 
   <!-- Temporary members that the idea has been shared with -->
   <?php 
-    $TempMembers=explode("#",$ideas2['share_temp_member']);
-    if ($ideas2['share_temp_member']!=null) {
+    $TempMembers=explode("#",$ideas2['share_temp_members']);
+    if ($ideas2['share_temp_members']!=null) {
       foreach ($TempMembers as $TempMember) {
         $TempMember = mysqli_query($conn,"SELECT * FROM tbl_temp_member WHERE id='".$TempMember."'");
         $TempMember = mysqli_fetch_array($TempMember);

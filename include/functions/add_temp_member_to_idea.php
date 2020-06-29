@@ -12,9 +12,9 @@ if (is_numeric($TempMemberId) && is_numeric($IdeaId)) {
 
 	//Making sure only the owner of the idea can add friends to it
 	if ($SharedTempMembers['member_id']==$MemberId) {
-		$SharedTempMembers = $SharedTempMembers['share_temp_member']."#".$TempMemberId."#";
+		$SharedTempMembers = $SharedTempMembers['share_temp_members']."#".$TempMemberId."#";
 
-		$query = "UPDATE tbl_ideas SET share_temp_member='".$SharedTempMembers."' WHERE id='".$IdeaId."'";
+		$query = "UPDATE tbl_ideas SET share_temp_members='".$SharedTempMembers."' WHERE id='".$IdeaId."'";
 
 			if (mysqli_query($conn, $query)) {
 				echo json_encode(array("statusCode"=>200));

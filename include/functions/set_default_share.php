@@ -16,7 +16,7 @@ $stmt = mysqli_fetch_array($stmt);
 if ($stmt['member_id']==$MemberId) {
 	
 	$stmt2 = mysqli_prepare($conn, "UPDATE tbl_member SET default_share_friends=?, default_share_groups=?, default_share_temp_members=? WHERE id=?");
-	mysqli_stmt_bind_param($stmt2, 'sssi', $stmt['share_friends'], $stmt['share_groups'], $stmt['share_temp_member'], $MemberId);
+	mysqli_stmt_bind_param($stmt2, 'sssi', $stmt['share_friends'], $stmt['share_groups'], $stmt['share_temp_members'], $MemberId);
 
 	/* execute prepared statement */
 	if (mysqli_stmt_execute($stmt2)) {

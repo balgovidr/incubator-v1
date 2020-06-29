@@ -13,7 +13,7 @@ if (is_numeric($TempMemberId) && is_numeric($IdeaId)) {
 	//Making sure only the owner of the idea can add members to it
 	if ($SharedTempMembers['member_id']==$MemberId) {
 
-		$stmt = mysqli_prepare($conn, "UPDATE tbl_ideas SET share_temp_member= REPLACE(share_temp_member, ?, '') WHERE id= ?");
+		$stmt = mysqli_prepare($conn, "UPDATE tbl_ideas SET share_temp_members= REPLACE(share_temp_members, ?, '') WHERE id= ?");
 		mysqli_stmt_bind_param($stmt, 'si', $DeleteTerm, $IdeaId);
 
 		$DeleteTerm="#".$TempMemberId."#";
