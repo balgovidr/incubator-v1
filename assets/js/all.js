@@ -28,6 +28,16 @@ function appendidea() {
             success: function (obj, textstatus) {
                 if( !('error' in obj) ) {
                     $(".content-rows").load(" .content-rows > *");
+                    console.log(obj);
+                    console.log(typeof(obj));
+                    $data=JSON.parse(JSON.stringify(obj));
+                    //Looping through the received array of temporary member emails and sending them emails
+                    //The first row of the array is the Idea Id
+                    $IdeaId = $data[0];
+                    var i;
+                    for (i = 1; i < obj.length-1; i++) {
+                        InviteToIdea($data[i], $IdeaId);
+                    }
                 }
                 else {
                     console.log(obj.error);
