@@ -1,12 +1,12 @@
 <?php
+session_start();
 include '../../lib/database.php';
   if(!empty($_REQUEST['id'])) {
     
     $id = $_REQUEST['id'];
-    $memberid = $_REQUEST['memberid'];
-    if (!is_numeric($id) || !is_numeric($memberid)) {
+    $memberid = $_SESSION["MemberId"];
+    if (!is_numeric($id)) {
       $id = 'error';
-      $memberid = 'error';
     }
     
     $ideas2 = mysqli_query($conn,"SELECT * FROM tbl_ideas WHERE id='".$id."'");
@@ -16,9 +16,16 @@ include '../../lib/database.php';
 <!-- Tab links -->
 <div class="tab fixed-size">
   <button class="tablinks" onclick="opentab(event, 'Edit')" id="defaultOpen">Edit</button>
-  <button class="tablinks" onclick="opentab(event, 'Share')">Share</button>
   <button class="tablinks" onclick="updateidea(<?php echo $id; ?>)" id="save<?php echo $id; ?>">Save</button>
+  <?php
+    //To make sure that the share tab is only available if the idea is yours
+      if ($ideas2['member_id']==$memberid) {
+  ?>
+  <button class="tablinks" onclick="opentab(event, 'Share')">Share</button>
   <button class="tablinks" onclick="opentab(event, 'Delete')">Delete</button>
+  <?php
+    };
+  ?>
 </div>
       
 <!-- Tab content -->
@@ -28,8 +35,14 @@ include '../../lib/database.php';
   </div>
 </div>
 
+<?php
+//To make sure that the share tab is only available if the idea is yours
+  if ($ideas2['member_id']==$memberid) {
+?>
+
 <div id="Share" class="tabcontent adjust-size padding15">
   <div class="title" id="share-friend-title">Currently shared with:</div>
+  <!-- Friends or members that the idea has been shared with -->
   <?php 
     $friends=explode("#",$ideas2['share_friends']);
     if ($ideas2['share_friends']!=null) {
@@ -51,6 +64,30 @@ include '../../lib/database.php';
       };
     };
   ?>
+
+  <!-- Temporary members that the idea has been shared with -->
+  <?php 
+    $TempMembers=explode("#",$ideas2['share_temp_member']);
+    if ($ideas2['share_temp_member']!=null) {
+      foreach ($TempMembers as $TempMember) {
+        $TempMember = mysqli_query($conn,"SELECT * FROM tbl_temp_member WHERE id='".$friend."'");
+        $TempMember = mysqli_fetch_array($TempMember);
+          if ($TempMember!=null) {
+  ?>
+  <div class="rows" id="temp-member-<?php echo $TempMember['id'] ?>">
+    <a class="adjust-size">
+      <?php echo $TempMember['email']; ?>
+    </a>
+    <a class="fixed-size icon" onclick="RemoveTempMemberFromIdea(<?php echo $id.",".$TempMember['id'] ?>)">
+      <i class="fas fa-user-minus"></i>
+    </a>
+  </div>
+  <?php
+          };
+      };
+    };
+  ?>
+
   <br/>
   <br/>
   <div class="title" id="share-group-title">And shared with the groups:</div>
@@ -77,29 +114,69 @@ include '../../lib/database.php';
     ?>
   <br/>
   <br/>
+  <!-- Search function to find friends to share it with -->
   <div class="title">Find more friends to share this idea with:</div>
   <div class="dropdown">
     <button onclick="dropdown('idea-dropdown')" class="dropbtn">Select a friend <i class="fas fa-caret-down"></i></button>
+    <!-- All of the stuff in the div below is hidden until the dropdown is activated by the user-->
     <div id="idea-dropdown" class="dropdown-content">
+      <!-- Search bar is always shown when dropdown is selected-->
       <input type="text" placeholder="Search.." id="idea-input" class="dropdown-input" onkeyup="filterFunction('idea-dropdown','idea-input')">
+        <!-- All of the member's friends who are also members -->
         <?php
+          //This script finds all of the friends of the user to be displayed to them
           $user_friends = mysqli_query($conn,"select * FROM tbl_friends WHERE member1='".$memberid."' AND status='friend' OR member2='".$memberid."' AND status='friend'");
             while ($user_friend = mysqli_fetch_array($user_friends)) {
+              //Goes through all of the rows of friends found from the tbl_friends table
               if ($user_friend['member1']==$memberid) {
+                //If the column member1 has the user's id, the 2nd column is the friend's id
                 $friend_id=$user_friend['member2'];
               } else {
+                //If the column member2 has the user's id, the 1st column is the friend's id
                 $friend_id=$user_friend['member1'];
               };
+              //Fetches the friend's details
               $friend_profile = mysqli_query($conn,"select * FROM tbl_member where id='".$friend_id."'");
               $friend_profile = mysqli_fetch_array($friend_profile);
-
+              
+              //If the idea is already shared with a friend, then their name is not repeated again in the list
               if (!in_array($friend_profile['id'],$friends) || $friends==null) {
         ?>
+      <!-- The name of the friend is shown, this will be filtered using the search bar. On select, the friend is added to the idea's shared list -->
       <a onclick="addfriendtoidea(<?php echo $id.",".$friend_profile['id'].",'".$friend_profile['firstname']." ".$friend_profile['lastname']."'" ?>)" id="dropdown-idea<?php echo $friend_profile['id']?>"><?php echo $friend_profile['firstname']." ".$friend_profile['lastname'] ?></a>
         <?php };
             };
         ?>
+        <!-- Display the member's friends who are temporary members -->
+        <?php
+          //This script finds all of the temporary member friends of the user to be displayed to them
+          $TempMemberFriends = mysqli_query($conn,"SELECT * FROM tbl_temp_member WHERE friend LIKE '%#".$memberid."#%'");
+            while ($TempMemberFriend = mysqli_fetch_array($TempMemberFriends)) {
+              //If the idea is already shared with a temporary member, then their name is not repeated again in the list
+              if (!in_array($TempMemberFriend['id'],$TempMembers) || $TempMembers==null) {
+        ?>
+      <!-- The name of the temporary member is shown, this will be filtered using the search bar. On select, the temporary member is added to the idea's shared list -->
+      <a onclick="AddTempMemberToIdea(<?php echo $TempMemberFriend['id'].",".$id.",'".$TempMemberFriend['email']."'" ?>)" id="dropdown-idea-temp-member-<?php echo $TempMemberFriend['id']?>"><?php echo $TempMemberFriend['email'] ?></a>
+        <?php };
+            };
+        ?>
 
+      <!-- Additional bit for if you didn't find the person you were searching for -->
+      <form onsubmit="CreateAndInviteToIdea(<?php echo $id ?>)" class="block-flex flex-column">
+        <div class="permanent">
+          <span><strong>Didn't find who you were looking for?</strong></span>
+        </div>
+        <div class="flex-row permanent">
+          <span>Make sure they've been added as your friend here:&nbsp;&nbsp;&nbsp;</span>
+          <div class="button" href="<?php echo BASE_URL ?>/friends/index.php">Friends</div>
+        </div>
+        <div class="flex-row permanent">
+          <span class="fixed-size">or invite them with their email below:&nbsp;&nbsp;&nbsp;</span>
+          <!-- Input box for inviting new users through their email -->
+          <input class="adjust-size" type="text" id="invite-email" placeholder="Email of your friend..."/>&nbsp;
+          <div onclick="CreateAndInviteToIdea(<?php echo $id ?>)" class="icon fixed-size"><i class="fas fa-angle-double-right"></i></div>
+        </div>
+      </form>
     </div>
   </div>
     
@@ -120,6 +197,11 @@ include '../../lib/database.php';
 
     </div>
   </div>
+  </br>
+  </br>
+  
+  <!--Creating a default sharing friends and groups using the settings above -->
+  <div class="button" id="DefaultShareButton" onclick="SetDefaultShare(<?php echo $id ?>); document.getElementById('DefaultShareButton').innerHTML='Done!'">Make this your default sharing setting</div>
 
 </div>
 
@@ -132,6 +214,10 @@ include '../../lib/database.php';
     </div>
     </div>
 </div>
+
+<?php
+  }
+?>
 
     <script>
   var quill = new Quill('#editor', {

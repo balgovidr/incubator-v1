@@ -4,7 +4,7 @@ include_once('../lib/database.php');
 $username = $_SESSION["username"];
 
 //Getting member details
-$member = mysqli_query($conn,"select * FROM tbl_member where username='".$username."'");
+$member = mysqli_query($conn,"SELECT * FROM tbl_member WHERE username='".$username."'");
 $member = mysqli_fetch_array($member);
 ?>
 <HTML>
@@ -30,12 +30,17 @@ $member = mysqli_fetch_array($member);
         <?php
             
 //Getting groups
-$groups = mysqli_query($conn,"select * FROM tbl_group where member_id='".$member['id']."'");
+$groups = mysqli_query($conn,"SELECT * FROM tbl_group where member_id='".$member['id']."'");
             
             while ($row = mysqli_fetch_array($groups)) { ?>
-        <a onclick="openModal();currentSlide(<?php echo $row['id'] ?>,'group',<?php echo $member['id'] ?>)" class="rows link">
-            <?php echo $row['title'] ?>
-        </a>
+        <div class="rows">
+            <a onclick="openModal();currentSlide(<?php echo $row['id'] ?>,'group',<?php echo $member['id'] ?>)" class="adjust-size link">
+                <?php echo $row['title'] ?>
+            </a>
+            <a class="fixed-size icon" onclick="openModal();currentSlide(<?php echo $row['id'] ?>,'group',<?php echo $member['id'] ?>)">
+                <i class="fas fa-edit"></i>
+            </a>
+        </div>
         <?php } ?>
         </div>
     </div>
