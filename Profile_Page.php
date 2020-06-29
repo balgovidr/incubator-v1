@@ -26,7 +26,7 @@ $member = mysqli_fetch_array($member);
 
     <?php include('assets/elements/header.php') ?>
 	<div class="container">
-        <!--profile pic and name-->
+        <!--profile pic and name--> 
         <div class = "profile_container">
             <div class = "profile_pic" onmouseover="profile_hover()" onmouseout="profile_hover_fin()" >
                 <img src="<?php include('profile_pic_decision.php') ?>" id= "pimg">
