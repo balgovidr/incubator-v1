@@ -70,7 +70,7 @@ include '../../lib/database.php';
     $TempMembers=explode("#",$ideas2['share_temp_member']);
     if ($ideas2['share_temp_member']!=null) {
       foreach ($TempMembers as $TempMember) {
-        $TempMember = mysqli_query($conn,"SELECT * FROM tbl_temp_member WHERE id='".$friend."'");
+        $TempMember = mysqli_query($conn,"SELECT * FROM tbl_temp_member WHERE id='".$TempMember."'");
         $TempMember = mysqli_fetch_array($TempMember);
           if ($TempMember!=null) {
   ?>
