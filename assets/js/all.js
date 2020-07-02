@@ -580,6 +580,25 @@ function RemoveTempMemberFromGroup($GroupId,$TempMemberId) {
     });
 }
 
+//Convert a temp member to a permanent member in a friend's ideas and groups
+function TempMemberToPermMember($Member1Id,$Member2Id) {
+    $Member1Id=parseInt($Member1Id);
+    $Member2Id=parseInt($Member2Id);
+    jQuery.ajax({
+        type: "POST",
+        url: base_url+'/include/functions/temp_member_to_perm_member.php',
+        dataType: 'json',
+        data: {Member1Id: $Member1Id, Member2Id: $Member2Id},
+        success: function (obj, textstatus) {
+            if( !('error' in obj) ) {
+            }
+            else {
+                console.log(obj.error);
+            }
+        }
+    });
+}
+
 /* Dropdown */
 function dropdown($name) {
   document.getElementById($name).classList.toggle("show");
