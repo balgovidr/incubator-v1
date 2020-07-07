@@ -25,6 +25,8 @@ $member = mysqli_fetch_array($member);
     </div>
 
     <?php include('assets/elements/header.php') ?>
+    <div class = "container_menu_incl">
+    <?php include('assets/elements/menu.php') ?>
 	<div class="container">
         <!--profile pic and name--> 
         <div class = "profile_container">
@@ -130,6 +132,7 @@ $member = mysqli_fetch_array($member);
             <button class="pic_update_btn" type="submit" name="submit">UPDATE</button>
         </form>
   </div>
+</div>
 </div>
 <!--...........................................end of modals................................................................-->
 
