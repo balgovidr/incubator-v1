@@ -15,12 +15,18 @@
 body {
     margin:0;
     overflow-x:hidden;
-    background-color:#333;
+    background-color:white;
 }
 .container {
 	font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
     width:100%;
+    display: inline-block;
     flex-direction:column;
+}
+
+.container_menu_incl{
+    display: flex;
+    flex-direction: row;
 }
 .header {
     background-color:#333;
@@ -49,11 +55,11 @@ body {
     font-size:11px;
     color:#d4d4d4;
 }
-/*.shadow-below {
+.shadow-below {
   -moz-box-shadow:    0px 3px 5px 6px #ccc;
   -webkit-box-shadow: 0px 3px 5px 6px #ccc;
   box-shadow:         0px 3px 5px 6px #ccc;
-}*/
+}
 .shadow-inset {
    -moz-box-shadow:    inset 0 0 10px #444;
    -webkit-box-shadow: inset 0 0 10px #444;
@@ -193,16 +199,21 @@ a {
 /* Modal Content */
 .modal-content-details {
   position: relative;
-  background-color: rgb(18, 19, 18);
+  /* background-color: rgb(18, 19, 18); */
+  background-color: #3b4f58;
   margin: -35px auto auto auto ;
-  padding: 0;
+  padding: 0px;
   width: 50%;
-  border-radius: 30px;
+  border-radius: 10px;
   justify-content: space-around;
   max-width: 1200px;
     height:auto;
     display:flex;
     flex-direction:column;
+    background-image: url('../../images/Textures/dark-exa.png'); /* The image used */
+        height:100%;
+        background-position: center; /* Center the image */
+        background-size: auto; /* Resize the background image to cover the entire container */
     
 }
 
@@ -248,6 +259,10 @@ a {
     margin-top: auto;
     margin-bottom: auto;
     padding:10px;
+    display:flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+
     
 }
 .form-block h1{
@@ -271,18 +286,23 @@ textarea{
     border-radius: 10px;
     padding:3px;
     font-family: Montserrat;
-    color: rgb(39, 87, 71);
+    color: rgb(255, 255, 255);
     padding-left: 10px;
+    background-color:#455a64;
+    border-style: none;
+    margin-bottom: -15px;
+    margin-top: 5px;
 }
 
 input{
+    background-color:#455a64;
     border-radius: 10px;
     border-style: hidden;
     padding:3px;
     padding-left: 5px;
     font-family: Montserrat;
-    color: rgb(39, 87, 71);
-    width: 45%;
+    color: rgb(255, 255, 255);
+    width: 50%;
 }
 
 .lbl{
@@ -538,16 +558,16 @@ input{
 
 
 .container{
-    background-color:#333;
+    background-color:white;
     height: 100%;
 }
 
 .profile_container {
     display:flex;
-    background-color: rgb(77, 76, 76);
-    margin-top: 20px;
-    border-radius:20px;
-    width:70%;
+    background-color:#3b4f58;
+    margin-top: 15px;
+    border-radius:5px;
+    width:97%;
     margin-left: auto;
     margin-right: auto;
     min-height: 250px;
@@ -556,6 +576,11 @@ input{
     flex-wrap: wrap;
     justify-content: space-evenly;
     overflow: hidden;
+    /*............*/
+        background-image: url('../../images/Textures/dark-exa.png'); /* The image used */
+        height:100%;
+        background-position: center; /* Center the image */
+        background-size: auto; /* Resize the background image to cover the entire container */
 }
 
 .profile_pic{
@@ -685,9 +710,9 @@ input{
     min-height: 220px;
     min-width:100px;
     width: auto;
-    background-color: rgb(77, 76, 76)33; 
+    /* background-color: #3b4f58; */
     margin-right: auto;
-    border-radius:20px;
+    /* border-radius:20px; */
     margin:30px;
     padding:40px;
     text-align: center;
@@ -695,19 +720,24 @@ input{
 
 .content_rest{
     display:flex;
-    width:70%;
-    background-color: rgb(77, 76, 76);
-    margin-top: 20px;
+    width:97%;
+    background-color: #3b4f58;
+    margin-top: 15px;
     margin-left: auto;
     margin-right: auto;
-    border-radius:20px;
+    padding-bottom: 10px;
+    border-radius:5px;
     flex-direction: column;
+    background-image: url('../../images/Textures/dark-exa.png'); /* The image used */
+        height:100%;
+        background-position: center; /* Center the image */
+        background-size: auto; /* Resize the background image to cover the entire container */
 }
 
 .footer{
     width:100%;
-    height:50px;
-    background-color:#333;
+    height:0px;
+    /* background-color:#455a64; */
     margin-top: 20px;
 }
 
@@ -719,7 +749,7 @@ input{
     margin-right: auto;
     margin-bottom: 5px;
     border-radius:20px;
-    background-color: rgb(77, 76, 76);
+    /* background-color: #3b4f58; */
     display: flex;
     padding:10px;
     
@@ -750,13 +780,14 @@ input{
 
 .dashboard{
 
-    background-color: #1c1c42;
+    /* background-color: #1c1c42; */
+    background-color: #455a64;
     min-height: 100px;
     margin-top:5px;
     margin-left: auto;
     margin-right: auto;
     width: 98%;
-    border-radius: 20px;
+    border-radius: 5px; 
     display:flex;
     margin-bottom: 5px;
     grid-template-rows: 40px 1fr;
@@ -771,20 +802,20 @@ input{
     margin-left: auto;
     margin-right: auto;
     width: 98%;
-    border-radius: 20px;
+    border-radius: 5px;
     display:flex;
     margin-bottom: 5px;
     
 }
 
 .occupation{
-    background-color: #686869;
+    background-color:  #455a64;
     min-height: 100px;
     margin-top:5px;
     margin-left: auto;
     margin-right: auto;
     width: 98%;
-    border-radius: 20px;
+    border-radius: 5px;
     display:flex;
     margin-bottom: 5px;
     flex-wrap: wrap;
@@ -815,8 +846,8 @@ input{
     margin-left: auto;
     margin-right: auto;
     margin-bottom: 5px;
-    border-radius:20px;
-    background-color:  #324a6d; 
+    border-radius:5px;
+    background-color:   #455a64; 
 }
 
 .Company{
@@ -827,8 +858,8 @@ input{
     margin-right: auto;
     margin-bottom: 20px;
     margin-bottom: 5px;
-    border-radius:20px;
-    background-color: #324a6d;
+    border-radius:5px;
+    background-color:  #455a64;
     
 }
 
@@ -872,7 +903,7 @@ input{
 }
 .edit-button{
     color:rgb(255, 255, 255);
-    background-color: #1c1c42;
+    background-color:  #455a64;
     display: inline-block;
     padding: 7px;
     border-radius: 100%;
@@ -897,5 +928,27 @@ input{
         color: rgb(39, 87, 71);
         width: 90%;
     }
+
+    /* Modal Content */
+.modal-content-details {
+    position: relative;
+    /* background-color: rgb(18, 19, 18); */
+    background-color: #3b4f58;
+    margin: -35px auto auto auto ;
+    padding: 0;
+    width: 80%;
+    border-radius: 30px;
+    justify-content: space-around;
+    max-width: 1200px;
+      /* height:auto; */
+      overflow:scroll;
+      display:flex;
+      flex-direction:column;
+      background-image: url('../../images/Textures/dark-exa.png'); /* The image used */
+          height:100%;
+          background-position: center; /* Center the image */
+          background-size: auto; /* Resize the background image to cover the entire container */
+      
+  }
 
 }
