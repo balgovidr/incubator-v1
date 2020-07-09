@@ -11,14 +11,27 @@ $MemberId = $_SESSION["MemberId"];
 $member = mysqli_query($conn,"SELECT * FROM tbl_member where username='".$username."'");
 $member = mysqli_fetch_array($member);
 ?>
+<!DOCTYPE html>
 <HTML>
 <HEAD>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-171498731-1"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-171498731-1');
+    </script>
+
 <TITLE>Incubator</TITLE>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-<link href="<?php echo BASE_URL ?>/assets/css/style.css" type="text/css"
-	rel="stylesheet" />
-<!--Required for the montserrat font -->
-<link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet"/>
+
+<!-- Favicon -->
+<link rel="shortcut icon" href="<?php echo BASE_URL ?>/images/favicon.png" />
+
+<link href="./assets/css/style.css" type="text/css"	rel="stylesheet" />
+
 </HEAD>
 <BODY>
     <!-- Sets the member's id so that it can be used later by some javascript functions-->
@@ -174,10 +187,11 @@ $user_groups = mysqli_query($conn,"SELECT * FROM tbl_group WHERE members LIKE '%
           <!-- Contents are within the idea_description.php file -->
   </div>
 </div>
-    
-    
+        
+    <!--Required for the montserrat font -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet"/>
     <script type="text/javascript" src="<?php echo BASE_URL ?>/assets/js/all.js"></script>
-    <script type="text/javascript" src="<?php echo BASE_URL ?>/vendor/jquery/jquery-3.3.1.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
     <?php
         //Checks if the title 'Ideas shared with you' is to be shown, toggles the display if it should
         if ($DisplayTitle==1) {

@@ -1,1 +1,12 @@
 Options -Indexes
+
+ErrorDocument 403 /error.php
+ErrorDocument 404 /error.php
+ErrorDocument 405 /error.php
+ErrorDocument 408 /error.php
+ErrorDocument 500 /error.php
+ErrorDocument 502 /error.php
+ErrorDocument 504 /error.php
+
+RewriteEngine On
+RewriteCond %{HTTP_HOST} !^www\. [NC] RewriteRule (.*) https://www.%{HTTP_HOST}%{REQUEST_URI} [R=301,L]

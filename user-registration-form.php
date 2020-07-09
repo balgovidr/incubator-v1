@@ -11,12 +11,12 @@ if (! empty($_POST["signup-btn"])) {
 <TITLE>Registration</TITLE>
 <!--<link href="./assets/css/user-registration.css" type="text/css"
 	rel="stylesheet" />-->
-<script src="./vendor/jquery/jquery-3.3.1.js" type="text/javascript"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
 </HEAD>
 <BODY>
 	<form name="sign-up" action="" method="post" class="sign-up-container"
 		onsubmit="return signupValidation()">
-		<div class="signup-heading">Registration</div>
+		<div class="signup-heading color-white">Registration</div>
 				<input class="input-box" type="text" name="firstname"
 					id="firstname" placeholder="First name">
 				<input class="input-box" type="text" name="lastname"
